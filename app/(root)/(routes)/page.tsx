@@ -332,31 +332,29 @@ const SetupPage = () => {
 										onSubmit={form.handleSubmit(onEmailLogin)}
 										className="space-y-8 w-full"
 									>
-										<div className="md:grid md:grid-cols-3 gap-8">
-											<FormField
-												control={form.control}
-												name="email"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Label</FormLabel>
-														<FormControl>
-															<Input
-																placeholder="Enter your Email"
-																{...field}
-															/>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-										</div>
+										<FormField
+											control={form.control}
+											name="email"
+											render={({ field }) => (
+												<FormItem className="mt-2">
+													<FormLabel>Email</FormLabel>
+													<FormControl>
+														<Input
+															placeholder="Enter your Email"
+															className="w-full"
+															{...field}
+														/>
+													</FormControl>
+												</FormItem>
+											)}
+										/>
 
 										<Button
 											disabled={loading}
-											className="ml-auto"
+											className="ml-auto w-full bg-gradient-to-r from-[#F3C879] to-[#ac8959] text-lg text-black"
 											type="submit"
 										>
-											Continue with Email
+											Sign in
 										</Button>
 									</form>
 								</Form>

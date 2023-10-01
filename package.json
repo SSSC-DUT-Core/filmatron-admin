@@ -1,5 +1,5 @@
 {
-	"name": "next13-ecommerce-admin",
+	"name": "Filmatron-admin",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -7,12 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"download-schema": "apollo service:download --endpoint=http://45.77.182.167/graphql graphql-schema.json",
-		"codegen": "npm run download-schema && apollo codegen:generate --localSchemaFile=graphql-schema.json,client-schema.graphql --target=typescript --tagName=gql"
-		
-	},
-	"resolutions": {
-		"graphql": "^16.18.0"
+		"generate-graphql": "graphql-codegen --config codegen.yml"
 	},
 	"dependencies": {
 		"@apollo/client": "^3.8.3",
@@ -47,8 +42,6 @@
 		"clsx": "^1.2.1",
 		"cmdk": "^0.2.0",
 		"date-fns": "^2.30.0",
-		"graphql": "^16.8.0",
-		"graphql-codegen": "^0.4.0",
 		"keccak256": "^1.0.6",
 		"lucide-react": "^0.244.0",
 		"merkletreejs": "^0.3.10",
@@ -60,6 +53,7 @@
 		"react-dom": "18.2.0",
 		"react-hook-form": "^7.45.0",
 		"react-hot-toast": "^2.4.1",
+		"react-query": "^3.39.3",
 		"react-spinners": "^0.13.8",
 		"recharts": "^2.7.1",
 		"stripe": "^12.10.0",
@@ -71,10 +65,15 @@
 		"zustand": "^4.3.8"
 	},
 	"devDependencies": {
-		"@types/graphql": "^14.5.0",
-		"apollo": "^2.34.0",
+		"@graphql-codegen/cli": "^5.0.0",
+		"@graphql-codegen/typescript": "^4.0.1",
+		"@graphql-codegen/typescript-operations": "^4.0.1",
+		"@graphql-codegen/typescript-react-query": "^5.0.0",
+		"@locator/babel-jsx": "^0.4.2",
 		"eslint": "8.42.0",
 		"eslint-config-next": "13.4.5",
-		"faker": "^6.6.6"
+		"faker": "^6.6.6",
+		"graphql": "^16.8.1",
+		"graphql-codegen-apollo-next-ssr": "^1.7.4"
 	}
 }

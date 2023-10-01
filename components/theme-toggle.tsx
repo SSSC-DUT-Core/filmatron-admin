@@ -29,6 +29,7 @@ export function ThemeToggle() {
   }
 
   const logout = async () => {
+    router.push('/', { scroll: false });
     if (!web3auth) {
       uiConsole('web3auth not initialized yet');
       return;
@@ -36,7 +37,6 @@ export function ThemeToggle() {
     await web3auth.logout();
     setProvider(null);
     setLoggedIn(false);
-    router.push('/', { scroll: false });
   };
 
   return (

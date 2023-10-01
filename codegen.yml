@@ -1,0 +1,15 @@
+schema: http://45.77.182.167/graphql
+documents: "graphql/**/*.graphql"
+generates:
+  generated/index.tsx:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-query
+    config:
+      fetcher: graphql-request
+      withHOC: false
+      withHooks: true
+      withComponent: false
+      useIndexSignature: true
+

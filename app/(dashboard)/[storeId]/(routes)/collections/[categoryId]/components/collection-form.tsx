@@ -26,19 +26,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const formSchema = z.object({
   name: z.string().min(2),
-  billboardId: z.string().min(1),
+  // collectionImage: z.union([z.instanceof(File).nullable(), z.literal(null)]),
 });
 
 type CollectionFormValues = z.infer<typeof formSchema>
 
 interface CollectionFormProps {
   initialData: null;
-  billboards: [];
+  collectionImage: File | null;
 };
 
 export const CollectionForm: React.FC<CollectionFormProps> = ({
   initialData,
-  billboards
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -55,7 +54,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       name: '',
-      billboardId: '',
+      collectionImage: '',
     }
   });
 
@@ -71,8 +70,12 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({
       router.push(`/${params.storeId}/categories`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error('Something went wrong.');
+      // toast.error('Something went wrong.');
+  
+
     } finally {
+      toast.success(toastMessage);
+      router.push('/dashboard/collections')
       setLoading(false);
     }
   };
@@ -130,9 +133,22 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({
                 </FormItem>
               )}
             />
-            <FormField
+                <FormField
               control={form.control}
-              name="billboardId"
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Symbol</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="Collection name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              // control={form.control}
+              name="collectionImage"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Image</FormLabel>

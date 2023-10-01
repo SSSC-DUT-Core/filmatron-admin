@@ -1,0 +1,6 @@
+mutation createCollection($input: CreateCollectionNFTDto!) {
+  createCollection(input: $input) {
+    success
+    message
+  }
+}

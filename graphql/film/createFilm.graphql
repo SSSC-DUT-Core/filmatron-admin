@@ -1,0 +1,6 @@
+mutation createFilm($input: CreateFilmDto!) {
+  createFilm(input: $input) {
+    success
+    message
+  }
+}

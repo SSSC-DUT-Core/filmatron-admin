@@ -1,5 +1,5 @@
 overwrite: true
-schema: http://45.77.182.167/graphql
+schema: https://45.77.182.167/graphql
 documents: "graphql/**/*.graphql"
 generates:
   graphql/generated/index.tsx:

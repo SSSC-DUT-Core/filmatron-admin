@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Web3AuthNoModal } from '@web3auth/no-modal';
-import { CHAIN_NAMESPACES, IProvider, WALLET_ADAPTERS } from '@web3auth/base';
-import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
-import { SolanaPrivateKeyProvider } from '@web3auth/solana-provider';
+
 
 import DiscordLoginImage from '../../../public/assets/auth/login-discord.svg';
 import FacebookLoginImage from '../../../public/assets/auth/login-facebook.svg';
@@ -26,7 +23,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Input } from '@/components/ui/input';
-import RPC from '../../../providers/solanaRPC';
 
 const clientId =
 	'BOAVY7JsleeYdhThRhwt2w7iBgqrNzroFXSIVrKOtF8lyrzdgss-wuGgUPMcmQPuJ5M4ECgWaS4KHBR5d2xzTSU';
@@ -70,8 +66,6 @@ const socialLoginOptions = [
 ];
 
 const SetupPage = () => {
-	const [web3auth, setWeb3auth] = useState<Web3AuthNoModal | null>(null);
-	const [provider, setProvider] = useState<IProvider | null>(null);
 	const [loggedIn, setLoggedIn] = useState<boolean | null>(false);
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
@@ -80,143 +74,42 @@ const SetupPage = () => {
 		resolver: zodResolver(formSchema),
 	});
 
-	useEffect(() => {
-		const init = async () => {
-			try {
-				const chainConfig = {
-					chainNamespace: CHAIN_NAMESPACES.SOLANA,
-					chainId: '0x3', // Please use 0x1 for Mainnet, 0x2 for Testnet, 0x3 for Devnet
-					rpcTarget: 'https://api.devnet.solana.com',
-					displayName: 'Solana Devnet',
-					blockExplorer: 'https://explorer.solana.com',
-					ticker: 'SOL',
-					tickerName: 'Solana Token',
-				};
-				const web3auth = new Web3AuthNoModal({
-					clientId,
-					chainConfig,
-					web3AuthNetwork: 'cyan',
-				});
 
-				setWeb3auth(web3auth);
-
-				const privateKeyProvider = new SolanaPrivateKeyProvider({
-					config: { chainConfig },
-				});
-
-				const openloginAdapter = new OpenloginAdapter({
-					privateKeyProvider,
-				});
-				web3auth.configureAdapter(openloginAdapter);
-
-				await web3auth.init();
-				setProvider(web3auth.provider);
-				if (web3auth.connected) {
-					setLoggedIn(true);
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		init();
-	}, []);
 
 	const login = async () => {
-		if (!web3auth) {
-			uiConsole('web3auth not initialized yet');
-			return;
-		}
-		try {
-      const web3authProvider = await web3auth.connectTo(
-				WALLET_ADAPTERS.OPENLOGIN,
-				{
-					loginProvider: 'google',
-				}
-			);
-			setProvider(web3authProvider);
-      router.push('/dashboard', { scroll: false });
-    } catch (error) {
-      console.error(error)
-    }
+			router.push('/dashboard')
 	};
 
 	const authenticateUser = async () => {
-		if (!web3auth) {
-			console.log('web3auth not initialized yet');
-			return;
-		}
-		const idToken = await web3auth.authenticateUser();
-		console.log('idToken: ', idToken);
+
 	};
 
 	const getUserInfo = async () => {
-		if (!web3auth) {
-			console.log('web3auth not initialized yet');
-			return;
-		}
-		const user = await web3auth.getUserInfo();
-    console.log('user: ', user);
+
 	};
 
 	const logout = async () => {
-		if (!web3auth) {
-			uiConsole('web3auth not initialized yet');
-			return;
-		}
-		await web3auth.logout();
-		setProvider(null);
-		setLoggedIn(false);
+
 	};
 
 	const getAccounts = async () => {
-		if (!provider) {
-			console.log('provider not initialized yet');
-			return;
-		}
-		const rpc = new RPC(provider);
-		const address = await rpc.getAccounts();
-    console.log('address: ', address);
+	
 	};
 
 	const getBalance = async () => {
-		if (!provider) {
-			console.log('provider not initialized yet');
-			return;
-		}
-		const rpc = new RPC(provider);
-		const balance = await rpc.getBalance();
-    console.log('balance: ', balance);
+
 	};
 
 	const sendTransaction = async () => {
-		if (!provider) {
-			console.log('provider not initialized yet');
-			return;
-		}
-		const rpc = new RPC(provider);
-		const receipt = await rpc.sendTransaction();
-    console.log('receipt: ', receipt);
+
 	};
 
 	const signMessage = async () => {
-		if (!provider) {
-			console.log('provider not initialized yet');
-			return;
-		}
-		const rpc = new RPC(provider);
-		const signedMessage = await rpc.signMessage();
-    console.log('signedMessage: ', signedMessage);
+
 	};
 
 	const getPrivateKey = async () => {
-		if (!provider) {
-			console.log('provider not initialized yet');
-			return;
-		}
-		const rpc = new RPC(provider);
-		const privateKey = await rpc.getPrivateKey();
-    console.log('privateKey: ', privateKey);
+
 	};
 
 	function uiConsole(...args: any[]): void {

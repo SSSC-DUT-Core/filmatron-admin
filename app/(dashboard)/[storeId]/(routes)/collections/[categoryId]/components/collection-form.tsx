@@ -2,7 +2,7 @@
 
 import * as z from "zod"
 import axios from "axios"
-import { useState } from "react"
+import React, { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
@@ -23,22 +23,28 @@ import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
+import { useCreateCollectionMutation } from "@/graphql/generated"
+import { CreateCollectionNftDto, CollectionMetadataDto } from "@/graphql/generated"
 const formSchema = z.object({
   name: z.string().min(2),
+  metadata: z.object({
+    name: z.string(),
+    symbol: z.string(),
+    description: z.string(),
+    image: z.string(),
+  })
   // collectionImage: z.union([z.instanceof(File).nullable(), z.literal(null)]),
 });
 
-type CollectionFormValues = z.infer<typeof formSchema>
+type CollectionFormValues = CreateCollectionNftDto
 
 interface CollectionFormProps {
-  initialData: null;
-  collectionImage: File | null;
+  initialData: CollectionFormValues | null;
 };
 
-export const CollectionForm: React.FC<CollectionFormProps> = ({
+export const CollectionForm = ({
   initialData,
-}) => {
+}: CollectionFormProps) => {
   const params = useParams();
   const router = useRouter();
 
@@ -51,31 +57,43 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({
   const action = initialData ? 'Save changes' : 'Create';
 
   const form = useForm<CollectionFormValues>({
-    resolver: zodResolver(formSchema),
+    // resolver: zodResolver(formSchema), // You can add zodResolver here if needed
     defaultValues: initialData || {
-      name: '',
-      collectionImage: '',
-    }
+      metadata: {
+        name: "", // Initialize with empty values
+        symbol: "",
+        uri: "",
+      },
+    },
   });
+  const [createCollectionMutation] = useCreateCollectionMutation();
 
-  const onSubmit = async (data: CollectionFormValues) => {
+  const onSubmit = async (data: CreateCollectionNftDto) => {
     try {
       setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/${params.storeId}/categories/${params.CollectionId}`, data);
+        // Handle editing here if needed
       } else {
-        await axios.post(`/api/${params.storeId}/categories`, data);
-      }
-      router.refresh();
-      router.push(`/${params.storeId}/categories`);
-      toast.success(toastMessage);
-    } catch (error: any) {
-      // toast.error('Something went wrong.');
-  
+        // Use form data to create a new collection
+        await createCollectionMutation({
+          variables: {
+            input: {
+              filmId: 1, // Set this value based on your logic
+              metadata: data.metadata, // Use form data
+            },
+          },
+        });
 
+        console.log("ok");
+        router.refresh();
+        router.push(`/${params.storeId}/categories`);
+        toast.success(toastMessage);
+      }
+    } catch (error: any) {
+      // Handle errors here
     } finally {
       toast.success(toastMessage);
-      router.push('/dashboard/collections')
+      router.push("/dashboard/collections");
       setLoading(false);
     }
   };
@@ -86,32 +104,47 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({
       await axios.delete(`/api/${params.storeId}/categories/${params.CollectionId}`);
       router.refresh();
       router.push(`/${params.storeId}/categories`);
-      toast.success('Collection deleted.');
+      toast.success("Collection deleted.");
     } catch (error: any) {
-      toast.error('Make sure you removed all products using this Collection first.');
+      toast.error("Make sure you removed all products using this Collection first.");
     } finally {
       setLoading(false);
       setOpen(false);
     }
-  }
+  };
+
+  const metadataKeys: (keyof CollectionMetadataDto)[] = ["name", "symbol", "uri"];
+
+  const metadataFields = metadataKeys.map((fieldName) => {
+    // Capitalize the first letter of the field name
+    const capitalizedFieldName = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+  
+    return (
+      <FormField
+        key={fieldName}
+        control={form.control}
+        name={`metadata.${fieldName}`}
+        render={({ field }) => (
+          <FormItem>
+            {/* Use the capitalizedFieldName here */}
+            <FormLabel>{capitalizedFieldName}</FormLabel>
+            <FormControl>
+              <Input disabled={loading} placeholder={`Enter ${capitalizedFieldName}`} {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  });
 
   return (
     <>
-    <AlertModal 
-      isOpen={open} 
-      onClose={() => setOpen(false)}
-      onConfirm={onDelete}
-      loading={loading}
-    />
-     <div className="flex items-center justify-between">
+      <AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onDelete} loading={loading} />
+      <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
-          <Button
-            disabled={loading}
-            variant="destructive"
-            size="sm"
-            onClick={() => setOpen(true)}
-          >
+          <Button disabled={loading} variant="destructive" size="sm" onClick={() => setOpen(true)}>
             <Trash className="h-4 w-4" />
           </Button>
         )}
@@ -120,47 +153,23 @@ export const CollectionForm: React.FC<CollectionFormProps> = ({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <div className="md:grid md:grid-cols-3 gap-8">
-            <FormField
+            {/* Render dynamically generated metadata fields */}
+            {metadataFields}
+            {/* <FormField
               control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Collection name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-                <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Symbol</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Collection name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              // control={form.control}
-              name="collectionImage"
+              name="metadata.uri"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Image</FormLabel>
                   <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                     <FormControl>
-                      <Input type="file"/>
+                      <Input type="file" />
                     </FormControl>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

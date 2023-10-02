@@ -19,8 +19,7 @@ export function ThemeToggle() {
 
   const router = useRouter();
 
-  const { web3auth, setLoggedIn, setProvider } = useAuthentication()
-  console.log(web3auth);
+  const { setLoggedIn} = useAuthentication()
   function uiConsole(...args: any[]): void {
     const el = document.querySelector('#console>p');
     if (el) {
@@ -30,12 +29,6 @@ export function ThemeToggle() {
 
   const logout = async () => {
     router.push('/', { scroll: false });
-    if (!web3auth) {
-      uiConsole('web3auth not initialized yet');
-      return;
-    }
-    await web3auth.logout();
-    setProvider(null);
     setLoggedIn(false);
   };
 

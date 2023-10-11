@@ -51,13 +51,15 @@ export type CreateCompressedNftMetadata = {
 };
 
 export type CreateFilmDto = {
+  avatar: Scalars['String']['input'];
+  background: Scalars['String']['input'];
   description: Scalars['String']['input'];
   directors?: Array<Scalars['String']['input']>;
   duration: Scalars['Int']['input'];
   endDateSubscriber: Scalars['DateTime']['input'];
-  genres?: Array<FilmGenre>;
+  genres?: Array<Scalars['String']['input']>;
   name: Scalars['String']['input'];
-  releaseDate: Scalars['String']['input'];
+  releaseDate: Scalars['DateTime']['input'];
   stars?: Array<Scalars['String']['input']>;
   topCasts?: Array<FilmTopCastInput>;
 };
@@ -77,32 +79,43 @@ export type FilmCompressedNftEntityEdge = {
   node: FilmCompressedNftEntity;
 };
 
-export enum FilmGenre {
-  Adventure = 'ADVENTURE',
-  Comedy = 'COMEDY',
-  Drama = 'DRAMA'
-}
-
-export type FilmInformationPublic = {
-  __typename?: 'FilmInformationPublic';
+export type FilmEntity = {
+  __typename?: 'FilmEntity';
   adminProcess: AdminProcessStatus;
+  avatar: Scalars['String']['output'];
+  background: Scalars['String']['output'];
   description: Scalars['String']['output'];
   directors: Array<Scalars['String']['output']>;
   duration: Scalars['Int']['output'];
   endDateSubscriber: Scalars['DateTime']['output'];
-  genres: Array<FilmGenre>;
+  genres: Array<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  releaseDate: Scalars['String']['output'];
+  releaseDate: Scalars['DateTime']['output'];
   stars: Array<Scalars['String']['output']>;
   status: FilmStatus;
   topCasts?: Maybe<Array<FilmTopCast>>;
 };
 
-export type FilmInformationPublicEdge = {
-  __typename?: 'FilmInformationPublicEdge';
+export type FilmEntityEdge = {
+  __typename?: 'FilmEntityEdge';
   cursor: Scalars['String']['output'];
-  node: FilmInformationPublic;
+  node: FilmEntity;
+};
+
+export type FilmGalleryEntity = {
+  __typename?: 'FilmGalleryEntity';
+  filmId: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  type: GalleryType;
+  url: Scalars['String']['output'];
+};
+
+export type FilmGalleryEntityEdge = {
+  __typename?: 'FilmGalleryEntityEdge';
+  cursor: Scalars['String']['output'];
+  node: FilmGalleryEntity;
 };
 
 export enum FilmStatus {
@@ -121,6 +134,11 @@ export type FilmTopCastInput = {
   name: Scalars['String']['input'];
 };
 
+export enum GalleryType {
+  Image = 'IMAGE',
+  Video = 'VIDEO'
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
   createCollection: ReturnMessageBase;
@@ -130,7 +148,11 @@ export type Mutation = {
   signIn: ReturnAccountDto;
   signInWithSocial: ReturnAccountDto;
   signUp: ReturnAccountDto;
+  subscribeToWhitelist: ReturnMessageBase;
+  /** This api used for update information about the film. For the top cast do not pass the value to the api. Can be used this to update the end date of subscribe for user to be a whitelist of film */
+  updateFilm: ReturnMessageBase;
   updateInformation: ReturnMessageBase;
+  upsertGalleryFilm: ReturnMessageBase;
 };
 
 
@@ -169,8 +191,23 @@ export type MutationSignUpArgs = {
 };
 
 
+export type MutationSubscribeToWhitelistArgs = {
+  filmId: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateFilmArgs = {
+  input: UpdateFilmDto;
+};
+
+
 export type MutationUpdateInformationArgs = {
   input: UpdateInformationDto;
+};
+
+
+export type MutationUpsertGalleryFilmArgs = {
+  input: UpsertGalleryFilmDto;
 };
 
 export type PageInfo = {
@@ -189,7 +226,13 @@ export type PaginatedCompressedNft = {
 
 export type PaginatedFilm = {
   __typename?: 'PaginatedFilm';
-  edges?: Maybe<Array<FilmInformationPublicEdge>>;
+  edges?: Maybe<Array<FilmEntityEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type PaginatedFilmGallery = {
+  __typename?: 'PaginatedFilmGallery';
+  edges?: Maybe<Array<FilmGalleryEntityEdge>>;
   pageInfo?: Maybe<PageInfo>;
 };
 
@@ -219,14 +262,28 @@ export type PublicInformationFilmCollectionNft = {
   uri: Scalars['String']['output'];
 };
 
+export type PublicInformationPerson = {
+  __typename?: 'PublicInformationPerson';
+  avatar?: Maybe<Scalars['String']['output']>;
+  background?: Maybe<Scalars['String']['output']>;
+  bio?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  publicKey?: Maybe<Scalars['String']['output']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   getCompressedNFT: FilmCompressedNftEntity;
   getCompressedNFTsOfFilm: PaginatedCompressedNft;
-  getFilmById: FilmInformationPublic;
+  getFilmById: FilmEntity;
   getFilmCollectionNFTById: PublicInformationFilmCollectionNft;
   getFilmMakerById: PersonEntity;
   getFilms: PaginatedFilm;
+  getGalleriesOfFilm: PaginatedFilmGallery;
+  getGalleryById: FilmGalleryEntity;
+  getWhitelistOfFilm: Array<WhitelistEntity>;
   helloFilmMaker: Scalars['String']['output'];
   logOut: ReturnMessageBase;
   refreshToken: ReturnTokenDto;
@@ -269,6 +326,25 @@ export type QueryGetFilmsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
+
+export type QueryGetGalleriesOfFilmArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  filmId: Scalars['ID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryGetGalleryByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetWhitelistOfFilmArgs = {
+  filmId: Scalars['ID']['input'];
+};
+
 export type ReturnAccountDto = {
   __typename?: 'ReturnAccountDto';
   accessToken: Scalars['String']['output'];
@@ -303,12 +379,42 @@ export type SignInWithSocialDto = {
   publicKey: Scalars['String']['input'];
 };
 
+export type UpdateFilmDto = {
+  avatar?: InputMaybe<Scalars['String']['input']>;
+  background?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  directors?: InputMaybe<Array<Scalars['String']['input']>>;
+  duration?: InputMaybe<Scalars['Int']['input']>;
+  endDateSubscriber?: InputMaybe<Scalars['DateTime']['input']>;
+  genres?: InputMaybe<Array<Scalars['String']['input']>>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  releaseDate?: InputMaybe<Scalars['DateTime']['input']>;
+  stars?: InputMaybe<Array<Scalars['String']['input']>>;
+  topCasts?: InputMaybe<Array<FilmTopCastInput>>;
+};
+
 export type UpdateInformationDto = {
   avatar?: InputMaybe<Scalars['String']['input']>;
   background?: InputMaybe<Scalars['String']['input']>;
   bio?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   publicKey?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpsertGalleryFilmDto = {
+  filmId: Scalars['Float']['input'];
+  id?: InputMaybe<Scalars['Float']['input']>;
+  name: Scalars['String']['input'];
+  url: Scalars['String']['input'];
+};
+
+export type WhitelistEntity = {
+  __typename?: 'WhitelistEntity';
+  filmId: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  person: PublicInformationPerson;
+  personId: Scalars['Float']['output'];
 };
 
 export type CreateCollectionMutationVariables = Exact<{
@@ -333,7 +439,7 @@ export type GetFilmsQueryVariables = Exact<{
 }>;
 
 
-export type GetFilmsQuery = { __typename?: 'Query', getFilms: { __typename?: 'PaginatedFilm', edges?: Array<{ __typename?: 'FilmInformationPublicEdge', cursor: string, node: { __typename?: 'FilmInformationPublic', id: string, name: string, description: string, duration: number, releaseDate: string, genres: Array<FilmGenre>, stars: Array<string>, directors: Array<string>, adminProcess: AdminProcessStatus, status: FilmStatus, endDateSubscriber: any, topCasts?: Array<{ __typename?: 'FilmTopCast', name: string, avatar: string }> | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } };
+export type GetFilmsQuery = { __typename?: 'Query', getFilms: { __typename?: 'PaginatedFilm', edges?: Array<{ __typename?: 'FilmEntityEdge', cursor: string, node: { __typename?: 'FilmEntity', id: string, name: string, description: string, duration: number, releaseDate: any, genres: Array<string>, stars: Array<string>, directors: Array<string>, adminProcess: AdminProcessStatus, status: FilmStatus, endDateSubscriber: any, topCasts?: Array<{ __typename?: 'FilmTopCast', name: string, avatar: string }> | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } };
 
 export type GetCompressedNfTsOfFilmQueryVariables = Exact<{
   filmId: Scalars['ID']['input'];

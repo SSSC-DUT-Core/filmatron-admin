@@ -4,6 +4,8 @@ query getFilms($first: Int, $after: String, $last: Int, $before: String) {
       cursor
       node {
         id
+        avatar
+        background
         name
         description
         duration

@@ -1,10 +1,11 @@
+"use client"
 import { CreditCard, DollarSign, Package } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { useEffect } from "react";
-import { useSignInWithSocialMutation } from "@/graphql/generated";
+import { Role, useSignInWithSocialMutation } from "@/graphql/generated";
 
 interface DashboardPageProps {
   params: {
@@ -21,7 +22,7 @@ const DashboardPage = async () => {
                   variables: {
                       input: { 
                           publicKey: "",
-                          role: "FILMAKER"
+                          role: Role.Filmmaker
                        },
                   },
                   context: {

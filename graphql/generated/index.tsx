@@ -453,7 +453,7 @@ export type GetFilmsQueryVariables = Exact<{
 }>;
 
 
-export type GetFilmsQuery = { __typename?: 'Query', getFilms: { __typename?: 'PaginatedFilm', edges?: Array<{ __typename?: 'FilmEntityEdge', cursor: string, node: { __typename?: 'FilmEntity', id: string, name: string, description: string, duration: number, releaseDate: any, genres: Array<string>, stars: Array<string>, directors: Array<string>, adminProcess: AdminProcessStatus, status: FilmStatus, endDateSubscriber: any, topCasts?: Array<{ __typename?: 'FilmTopCast', name: string, avatar: string }> | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } };
+export type GetFilmsQuery = { __typename?: 'Query', getFilms: { __typename?: 'PaginatedFilm', edges?: Array<{ __typename?: 'FilmEntityEdge', cursor: string, node: { __typename?: 'FilmEntity', id: string, avatar: string, background: string, name: string, description: string, duration: number, releaseDate: any, genres: Array<string>, stars: Array<string>, directors: Array<string>, adminProcess: AdminProcessStatus, status: FilmStatus, endDateSubscriber: any, topCasts?: Array<{ __typename?: 'FilmTopCast', name: string, avatar: string }> | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } };
 
 export type GetCompressedNfTsOfFilmQueryVariables = Exact<{
   filmId: Scalars['ID']['input'];
@@ -575,6 +575,8 @@ export const GetFilmsDocument = gql`
       cursor
       node {
         id
+        avatar
+        background
         name
         description
         duration

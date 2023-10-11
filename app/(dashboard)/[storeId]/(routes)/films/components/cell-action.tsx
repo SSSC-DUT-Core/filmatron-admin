@@ -16,10 +16,10 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
-import { ProductColumn } from "./columns";
+import { FilmEntity } from "@/graphql/generated";
 
 interface CellActionProps {
-  data: ProductColumn;
+  data: FilmEntity;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({

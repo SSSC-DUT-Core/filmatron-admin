@@ -1,4 +1,4 @@
-import { ProductForm } from "./components/film-form";
+import { FilmForm } from "./components/film-form";
 
 const ProductPage = async ({
   params
@@ -8,7 +8,7 @@ const ProductPage = async ({
   return ( 
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ProductForm 
+        <FilmForm 
           categories={[]} 
           colors={[]}
           sizes={[]}

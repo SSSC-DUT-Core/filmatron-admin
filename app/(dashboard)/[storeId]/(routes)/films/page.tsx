@@ -1,19 +1,28 @@
-import { format } from "date-fns";
 
-import { formatter } from "@/lib/utils";
-
+"use client"
 import { ProductsClient } from "./components/client";
 import { ProductColumn } from "./components/columns";
+import {useGetFilmsQuery} from "@/graphql/generated";
 
 const ProductsPage = async ({
   params
 }: {
   params: { storeId: string }
 }) => {
+  " "
+	const { data:films, loading, error }  = useGetFilmsQuery(
+      {variables: {
+                  first: 0,
+                  after: "1",
+                  last: 5,
+                  before: "1"
+              },}
+        );
+
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ProductsClient data={[]} />
+        <ProductsClient data={films} />
       </div>
     </div>
   );

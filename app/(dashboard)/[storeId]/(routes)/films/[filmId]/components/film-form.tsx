@@ -26,21 +26,25 @@ import { AlertModal } from "@/components/modals/alert-modal"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ImageUpload from "@/components/ui/image-upload"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useActiveStore } from '../../../../../../../hooks/use-active-store';
+import { useCreateFilmMutation, CreateFilmDto, FilmGenre } from '@/graphql/generated/index';
 
+const validGenres = Object.values(FilmGenre).map((genre) => genre.toString());
 const formSchema = z.object({
-  name: z.string().min(1),
-  images: z.object({ url: z.string() }).array(),
-  price: z.coerce.number().min(1),
-  categoryId: z.string().min(1),
-  colorId: z.string().min(1),
-  sizeId: z.string().min(1),
-  isFeatured: z.boolean().default(false).optional(),
-  isArchived: z.boolean().default(false).optional()
+  // name: z.string(),
+  // description: z.string(),
+  // duration: z.number(),
+  // releaseDate: z.string(),
+  // genres: z.array(z.enum(validGenres as any)),
+  // stars: z.array(z.string()),
+  // directors: z.union([z.array(z.string())]),
+  // topCasts: z.union([z.array(z.string()), z.string()]),
+  // endDateSubscriber: z.string(),
 });
 
-type ProductFormValues = z.infer<typeof formSchema>
+type FilmFormValues = z.infer<typeof formSchema>
 
-interface ProductFormProps {
+interface FilmFormProps {
   initialData: {
     images: any[]
   } | null;
@@ -49,7 +53,7 @@ interface ProductFormProps {
   sizes: any[];
 };
 
-export const ProductForm: React.FC<ProductFormProps> = ({
+export const FilmForm: React.FC<FilmFormProps> = ({
   initialData,
   categories,
   sizes,
@@ -61,43 +65,56 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? 'Edit product' : 'Create product';
-  const description = initialData ? 'Edit a product.' : 'Add a new product';
-  const toastMessage = initialData ? 'Product updated.' : 'Product created.';
+  const title = initialData ? 'Edit Film' : 'Create Film';
+  const description = initialData ? 'Edit a Film.' : 'Add a new Film';
+  const toastMessage = initialData ? 'Film updated.' : 'Film created.';
   const action = initialData ? 'Save changes' : 'Create';
-
+  const  [createFilm] = useCreateFilmMutation();
   const defaultValues = initialData ? {
     ...initialData,
     price: parseFloat(String('')),
   } : {
     name: '',
     images: [],
-    price: 0,
-    categoryId: '',
-    colorId: '',
-    sizeId: '',
-    isFeatured: false,
-    isArchived: false,
+  
   }
 
-  const form = useForm<ProductFormValues>({
+  const form = useForm<FilmFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues
   });
 
-  const onSubmit = async (data: ProductFormValues) => {
+  const onSubmit = async (data: FilmFormValues) => {
     try {
       setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/${params.storeId}/products/${params.productId}`, data);
+        await axios.patch(`/api/${params.storeId}/films/${params.filmId}`, data);
       } else {
-        await axios.post(`/api/${params.storeId}/products`, data);
+        await createFilm(
+          {
+            variables: {
+              input: {
+                "name": "Film Name",
+                "description": "Film Description",
+                "duration": 120,
+                "releaseDate": "2023-10-04",
+                "genres": [FilmGenre.Adventure],
+                "stars": ["Actor 1", "Actor 2"],
+                "directors": ["Director 1"],
+                "topCasts": [{"name": "Actor 3", "avatar": "https://placebear.com/g/200/200"}],
+                "endDateSubscriber": "2023-11-04T00:00:00Z"
+            }
+            }
+          }
+        )
       }
       router.refresh();
-      router.push(`/${params.storeId}/products`);
+      router.push(`/${params.storeId}/films`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error('Something went wrong.');
+      toast.error('Something went wrong.', error);
+      toast.success(toastMessage);
+
     } finally {
       setLoading(false);
     }
@@ -106,10 +123,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
+      await axios.delete(`/api/${params.storeId}/films/${params.filmId}`);
       router.refresh();
-      router.push(`/${params.storeId}/products`);
-      toast.success('Product deleted.');
+      router.push(`/${params.storeId}/films`);
+      toast.success('Film deleted.');
     } catch (error: any) {
       toast.error('Something went wrong.');
     } finally {
@@ -120,188 +137,204 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
   return (
     <>
-    <AlertModal 
-      isOpen={open} 
-      onClose={() => setOpen(false)}
-      onConfirm={onDelete}
-      loading={loading}
-    />
-     <div className="flex items-center justify-between">
-        <Heading title={title} description={description} />
-        {initialData && (
-          <Button
-            disabled={loading}
-            variant="destructive"
-            size="sm"
-            onClick={() => setOpen(true)}
-          >
-            <Trash className="h-4 w-4" />
-          </Button>
-        )}
+      <div className="flex items-center justify-between">
+        <Heading title="Create Film" description="Add a new Film" />
       </div>
       <Separator />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <FormField
             control={form.control}
-            name="images"
+            name="name"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Images</FormLabel>
-                <FormControl>
-                  <ImageUpload 
-                    value={field.value.map((image) => image.url)} 
-                    disabled={loading} 
-                    onChange={(url) => field.onChange([...field.value, { url }])}
-                    onRemove={(url) => field.onChange([...field.value.filter((current) => current.url !== url)])}
+              <div className="md:grid md:grid-cols-3 gap-8">
+                <div>
+                  <FormLabel>Name</FormLabel>
+                  <Input
+                    disabled={false} // Set to true if needed
+                    placeholder="Film name"
+                    {...field}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+                  <FormMessage />
+                </div>
+              </div>
             )}
           />
-          <div className="md:grid md:grid-cols-3 gap-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Product name" {...field} />
-                  </FormControl>
+               <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <div className="md:grid md:grid-cols-3 gap-8">
+                <div>
+                  <FormLabel>Description</FormLabel>
+                  <Input
+                    disabled={false} // Set to true if needed
+                    placeholder="Film descrption"
+                    {...field}
+                  />
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input type="number" disabled={loading} placeholder="9.99" {...field} />
-                  </FormControl>
+                </div>
+              </div>
+            )}
+          />
+               <FormField
+            control={form.control}
+            name="duration"
+            render={({ field }) => (
+              <div className="md:grid md:grid-cols-3 gap-8">
+                <div>
+                  <FormLabel>Duration</FormLabel>
+                  <Input
+                    type="number"
+                    disabled={false} // Set to true if needed
+                    placeholder="Film descrption"
+                    {...field}
+                  />
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+                </div>
+              </div>
+            )}
+          />
+             <FormField
+            control={form.control}
+            name="releaseDate"
+            render={({ field }) => (
+              <div className="md:grid md:grid-cols-3 gap-8">
+                <div>
+                  <FormLabel>Release Date</FormLabel>
+                  <Input
+                    disabled={false} // Set to true if needed
+                    placeholder="Film release date"
+                    {...field}
+                  />
+                  <FormMessage />
+                </div>
+              </div>
+            )}
+          />
+        <FormField
               control={form.control}
-              name="categoryId"
+              name="genres"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>Genres</FormLabel>
                   <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue defaultValue={field.value} placeholder="Select a category" />
+                        <SelectValue defaultValue={field.value} placeholder="Select a genre" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
+                      {Object.values(FilmGenre).map((genre) => (
+                        <SelectItem key={genre} value={genre}>{genre}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <FormField
-              control={form.control}
-              name="sizeId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Size</FormLabel>
-                  <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue defaultValue={field.value} placeholder="Select a size" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {sizes.map((size) => (
-                        <SelectItem key={size.id} value={size.id}>{size.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+            />        
+               <FormField
+            control={form.control}
+            name="stars"
+            render={({ field }) => (
+              <div className="md:grid md:grid-cols-3 gap-8">
+                <div>
+                  <FormLabel>Stars</FormLabel>
+                  <Input
+                    disabled={false} // Set to true if needed
+                    placeholder="Film stars<"
+                    {...field}
+                  />
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="colorId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Color</FormLabel>
-                  <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue defaultValue={field.value} placeholder="Select a color" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {colors.map((color) => (
-                        <SelectItem key={color.id} value={color.id}>{color.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                </div>
+              </div>
+            )}
+          />
+              <FormField
+            control={form.control}
+            name="directors"
+            render={({ field }) => (
+              <div className="md:grid md:grid-cols-3 gap-8">
+                <div>
+                  <FormLabel>Directors</FormLabel>
+                  <Input
+                    disabled={false} // Set to true if needed
+                    placeholder="Film directors"
+                    {...field}
+                  />
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="isFeatured"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      // @ts-ignore
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Featured
-                    </FormLabel>
-                    <FormDescription>
-                      This product will appear on the home page
-                    </FormDescription>
-                  </div>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="isArchived"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      // @ts-ignore
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Archived
-                    </FormLabel>
-                    <FormDescription>
-                      This product will not appear anywhere in the store.
-                    </FormDescription>
-                  </div>
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
+                </div>
+              </div>
+            )}
+          />
+          <FormField
+  control={form.control}
+  name="topCasts"
+  render={({ field }) => (
+    <div className="md:grid md:grid-cols-3 gap-8">
+      <div>
+        <FormLabel>Top Casts</FormLabel>
+        {Array.isArray(field.value) ? (
+          // If it's an array, map through the values
+          field.value.map((cast, index) => (
+            <div key={index}>
+              <Input
+                disabled={false} // Set to true if needed
+                placeholder={`Top Cast ${index + 1}`}
+                value={cast}
+                onChange={(e) => {
+                  const newCasts = [...field.value];
+                  newCasts[index] = e.target.value;
+                  field.onChange(newCasts);
+                }}
+              />
+              <FormMessage />
+            </div>
+          ))
+        ) : (
+          // If it's a single string, render a single input field
+          <Input
+            disabled={false} // Set to true if needed
+            placeholder="Top Cast"
+            {...field}
+          />
+        )}
+       (
+          <Button
+            onClick={() => {
+              // Add a new input field when it's an array
+              const newCasts = [...field.value, ""];
+              field.onChange(newCasts);
+            }}
+          >
+            Add Top Cast
+          </Button>
+        )
+      </div>
+    </div>
+  )}
+/>
+
+      <FormField
+            control={form.control}
+            name="endDateSubscriber"
+            render={({ field }) => (
+              <div className="md:grid md:grid-cols-3 gap-8">
+                <div>
+                  <FormLabel>End Date Subscriber</FormLabel>
+                  <Input
+                    disabled={false} // Set to true if needed
+                    placeholder="Film end date subscriber"
+                    {...field}
+                  />
+                  <FormMessage />
+                </div>
+              </div>
+            )}
+          />
+          <Button className="ml-auto" type="submit">
+            Create
           </Button>
         </form>
       </Form>

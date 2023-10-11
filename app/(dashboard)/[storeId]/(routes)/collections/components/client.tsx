@@ -77,7 +77,7 @@ export const CollectionsClient: React.FC<CollectionsClientProps> = ({ data }) =>
 			actions: ['approve', 'reject'],
 		},
 	];
-
+	// const useGetCollections
 	return (
 		<>
 			<div className="flex items-center justify-between">

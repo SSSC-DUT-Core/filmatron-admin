@@ -325,6 +325,27 @@ export type CreateFilmMutationVariables = Exact<{
 
 export type CreateFilmMutation = { __typename?: 'Mutation', createFilm: { __typename?: 'ReturnMessageBase', success: boolean, message: string } };
 
+export type GetFilmsQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetFilmsQuery = { __typename?: 'Query', getFilms: { __typename?: 'PaginatedFilm', edges?: Array<{ __typename?: 'FilmInformationPublicEdge', cursor: string, node: { __typename?: 'FilmInformationPublic', id: string, name: string, description: string, duration: number, releaseDate: string, genres: Array<FilmGenre>, stars: Array<string>, directors: Array<string>, adminProcess: AdminProcessStatus, status: FilmStatus, endDateSubscriber: any, topCasts?: Array<{ __typename?: 'FilmTopCast', name: string, avatar: string }> | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } };
+
+export type GetCompressedNfTsOfFilmQueryVariables = Exact<{
+  filmId: Scalars['ID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetCompressedNfTsOfFilmQuery = { __typename?: 'Query', getCompressedNFTsOfFilm: { __typename?: 'PaginatedCompressedNFT', edges?: Array<{ __typename?: 'FilmCompressedNFTEntityEdge', cursor: string, node: { __typename?: 'FilmCompressedNFTEntity', id: string, name: string, symbol: string, uri: string, filmId: number } }> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } };
+
 
 export const CreateCollectionDocument = gql`
     mutation createCollection($input: CreateCollectionNFTDto!) {
@@ -394,3 +415,126 @@ export function useCreateFilmMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreateFilmMutationHookResult = ReturnType<typeof useCreateFilmMutation>;
 export type CreateFilmMutationResult = Apollo.MutationResult<CreateFilmMutation>;
 export type CreateFilmMutationOptions = Apollo.BaseMutationOptions<CreateFilmMutation, CreateFilmMutationVariables>;
+export const GetFilmsDocument = gql`
+    query getFilms($first: Int, $after: String, $last: Int, $before: String) {
+  getFilms(first: $first, after: $after, last: $last, before: $before) {
+    edges {
+      cursor
+      node {
+        id
+        name
+        description
+        duration
+        releaseDate
+        genres
+        stars
+        directors
+        adminProcess
+        status
+        topCasts {
+          name
+          avatar
+        }
+        endDateSubscriber
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFilmsQuery__
+ *
+ * To run a query within a React component, call `useGetFilmsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFilmsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFilmsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      last: // value for 'last'
+ *      before: // value for 'before'
+ *   },
+ * });
+ */
+export function useGetFilmsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetFilmsQuery, GetFilmsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetFilmsQuery, GetFilmsQueryVariables>(GetFilmsDocument, options);
+      }
+export function useGetFilmsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetFilmsQuery, GetFilmsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetFilmsQuery, GetFilmsQueryVariables>(GetFilmsDocument, options);
+        }
+export type GetFilmsQueryHookResult = ReturnType<typeof useGetFilmsQuery>;
+export type GetFilmsLazyQueryHookResult = ReturnType<typeof useGetFilmsLazyQuery>;
+export type GetFilmsQueryResult = Apollo.QueryResult<GetFilmsQuery, GetFilmsQueryVariables>;
+export const GetCompressedNfTsOfFilmDocument = gql`
+    query getCompressedNFTsOfFilm($filmId: ID!, $first: Int, $after: String, $last: Int, $before: String) {
+  getCompressedNFTsOfFilm(
+    filmId: $filmId
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+  ) {
+    edges {
+      cursor
+      node {
+        id
+        name
+        symbol
+        uri
+        filmId
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCompressedNfTsOfFilmQuery__
+ *
+ * To run a query within a React component, call `useGetCompressedNfTsOfFilmQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCompressedNfTsOfFilmQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCompressedNfTsOfFilmQuery({
+ *   variables: {
+ *      filmId: // value for 'filmId'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      last: // value for 'last'
+ *      before: // value for 'before'
+ *   },
+ * });
+ */
+export function useGetCompressedNfTsOfFilmQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetCompressedNfTsOfFilmQuery, GetCompressedNfTsOfFilmQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetCompressedNfTsOfFilmQuery, GetCompressedNfTsOfFilmQueryVariables>(GetCompressedNfTsOfFilmDocument, options);
+      }
+export function useGetCompressedNfTsOfFilmLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCompressedNfTsOfFilmQuery, GetCompressedNfTsOfFilmQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetCompressedNfTsOfFilmQuery, GetCompressedNfTsOfFilmQueryVariables>(GetCompressedNfTsOfFilmDocument, options);
+        }
+export type GetCompressedNfTsOfFilmQueryHookResult = ReturnType<typeof useGetCompressedNfTsOfFilmQuery>;
+export type GetCompressedNfTsOfFilmLazyQueryHookResult = ReturnType<typeof useGetCompressedNfTsOfFilmLazyQuery>;
+export type GetCompressedNfTsOfFilmQueryResult = Apollo.QueryResult<GetCompressedNfTsOfFilmQuery, GetCompressedNfTsOfFilmQueryVariables>;

@@ -27,19 +27,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ImageUpload from "@/components/ui/image-upload"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useActiveStore } from '../../../../../../../hooks/use-active-store';
-import { useCreateFilmMutation, CreateFilmDto, FilmGenre } from '@/graphql/generated/index';
+import { useCreateFilmMutation, CreateFilmDto } from '@/graphql/generated/index';
 
-const validGenres = Object.values(FilmGenre).map((genre) => genre.toString());
+// const validGenres = Object.values(FilmGenre).map((genre) => genre.toString());
 const formSchema = z.object({
-  // name: z.string(),
-  // description: z.string(),
-  // duration: z.number(),
-  // releaseDate: z.string(),
-  // genres: z.array(z.enum(validGenres as any)),
-  // stars: z.array(z.string()),
-  // directors: z.union([z.array(z.string())]),
-  // topCasts: z.union([z.array(z.string()), z.string()]),
-  // endDateSubscriber: z.string(),
+  name: z.string(),
+  description: z.string(),
+  duration: z.number(),
+  releaseDate: z.string(),
+  genres: z.array(z.string()),
+  stars: z.array(z.string()),
+  directors: z.union([z.array(z.string()), z.string()]),
+  topCasts: z.union([z.array(z.string()), z.string()]),
+  endDateSubscriber: z.string(),
 });
 
 type FilmFormValues = z.infer<typeof formSchema>
@@ -94,11 +94,13 @@ export const FilmForm: React.FC<FilmFormProps> = ({
           {
             variables: {
               input: {
+                "avatar": "created",
+                "background": "created",
                 "name": "Film Name",
                 "description": "Film Description",
                 "duration": 120,
                 "releaseDate": "2023-10-04",
-                "genres": [FilmGenre.Adventure],
+                "genres": ["ADVENTURES"],
                 "stars": ["Actor 1", "Actor 2"],
                 "directors": ["Director 1"],
                 "topCasts": [{"name": "Actor 3", "avatar": "https://placebear.com/g/200/200"}],
@@ -218,18 +220,11 @@ export const FilmForm: React.FC<FilmFormProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Genres</FormLabel>
-                  <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue defaultValue={field.value} placeholder="Select a genre" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.values(FilmGenre).map((genre) => (
-                        <SelectItem key={genre} value={genre}>{genre}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    disabled={false} // Set to true if needed
+                    placeholder="Film stars<"
+                    {...field}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -283,11 +278,6 @@ export const FilmForm: React.FC<FilmFormProps> = ({
                 disabled={false} // Set to true if needed
                 placeholder={`Top Cast ${index + 1}`}
                 value={cast}
-                onChange={(e) => {
-                  const newCasts = [...field.value];
-                  newCasts[index] = e.target.value;
-                  field.onChange(newCasts);
-                }}
               />
               <FormMessage />
             </div>
@@ -300,17 +290,6 @@ export const FilmForm: React.FC<FilmFormProps> = ({
             {...field}
           />
         )}
-       (
-          <Button
-            onClick={() => {
-              // Add a new input field when it's an array
-              const newCasts = [...field.value, ""];
-              field.onChange(newCasts);
-            }}
-          >
-            Add Top Cast
-          </Button>
-        )
       </div>
     </div>
   )}

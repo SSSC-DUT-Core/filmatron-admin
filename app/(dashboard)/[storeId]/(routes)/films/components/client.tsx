@@ -8,10 +8,11 @@ import { DataTable } from "@/components/ui/data-table";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { ApiList } from "@/components/ui/api-list";
-import { ProductColumn, columns } from "./columns";
+import {  columns } from "./columns";
+import { FilmEntity } from "@/graphql/generated";
 
 interface ProductsClientProps {
-  data: ProductColumn[];
+  data?: FilmEntity[];
 };
 
 export const ProductsClient: React.FC<ProductsClientProps> = ({
@@ -20,33 +21,12 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({
   const params = useParams();
   const router = useRouter();
 
-  const productData: ProductColumn[] = [
-		{
-			id: '1',
-			name: 'Người Mặt Trời',
-			category: 'film',
-			price: '5000',
-			isArchived: false,
-			isFeatured: true,
-			createdAt: '2022/12/03',
-		},
-		{
-			id: '2',
-			name: 'Chị Chị Em Em',
-			category: 'film',
-			price: '5000',
-			isArchived: false,
-			isFeatured: true,
-			createdAt: '2022/12/03',
-		},
-	];
-
 
   return (
 		<>
 			<div className="flex items-center justify-between">
 				<Heading
-					title={`Films (${productData.length})`}
+					title={`Films (${data?.length})`}
 					description="Manage products for your store"
 				/>
 				<Button onClick={() => router.push(`/${params.storeId}/films/new`)}>
@@ -54,7 +34,7 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({
 				</Button>
 			</div>
 			<Separator />
-			<DataTable searchKey="name" columns={columns} data={productData} />
+			<DataTable searchKey="name" columns={columns} data={data ?? []} />
 			<Heading title="API" description="API Calls for Products" />
 			<Separator />
 			<ApiList entityName="products" entityIdName="productId" />

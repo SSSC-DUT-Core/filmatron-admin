@@ -3,6 +3,8 @@ import { CreditCard, DollarSign, Package } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import { useEffect } from "react";
+import { useSignInWithSocialMutation } from "@/graphql/generated";
 
 interface DashboardPageProps {
   params: {
@@ -11,6 +13,27 @@ interface DashboardPageProps {
 };
 
 const DashboardPage = async () => {
+  const [signInWithSocialMutation, { data, loading, error }] = useSignInWithSocialMutation();
+  useEffect(() => {
+      if (sessionStorage.getItem("access_token")) {
+          signInWithSocialMutation(
+              {
+                  variables: {
+                      input: { 
+                          publicKey: "",
+                          role: "FILMAKER"
+                       },
+                  },
+                  context: {
+                      headers: {
+                          Authorization: sessionStorage.getItem("access_token"),
+                      },
+                  },
+              }
+           
+          )
+      }
+  }, []);
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">

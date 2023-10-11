@@ -66,7 +66,12 @@ export const CollectionForm = ({
       },
     },
   });
-  const [createCollectionMutation] = useCreateCollectionMutation();
+  const [createCollectionMutation] = useCreateCollectionMutation(
+    {
+      "context" : {
+          "authorization": sessionStorage.getItem("access_token")}
+      }
+  );
 
   const onSubmit = async (data: CreateCollectionNftDto) => {
     try {

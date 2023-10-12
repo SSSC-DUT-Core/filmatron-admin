@@ -21,7 +21,7 @@ const DashboardPage = async () => {
               {
                   variables: {
                       input: { 
-                          publicKey: "",
+                          publicKey: "test",
                           role: Role.Filmmaker
                        },
                   },

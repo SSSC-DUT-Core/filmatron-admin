@@ -36,5 +36,9 @@ export const columns: ColumnDef<FilmEntity>[]  = [
     accessorKey: 'duration',
     header: 'Duration',
   },
+  {
+		id: 'actions',
+		cell: ({ row }) => <CellAction data={row.original} />,
+	},
   // Add more columns as needed
 ];

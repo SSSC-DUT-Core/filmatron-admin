@@ -90,8 +90,8 @@ module.exports = {
 			},
 			backgroundImage: {
 				'gradient-conic': 'conic-gradient(transparent, var(--tw-gradient-to))',
-				'background-layout': "url('../images/background-layout.webp')",
-				'background': "url('../images/background.webp')",
+				'background-login-layout': "url('../images/background-layout.webp')",
+				'background-login': "url('../images/background.webp')",
 			},
 		},
 	},

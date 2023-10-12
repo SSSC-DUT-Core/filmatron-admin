@@ -83,8 +83,8 @@ const LoginPage = () => {
     }, [authorizationCode]);
 
     return (
-        <div className="bg-background-layout bg-cover bg-right w-screen h-screen py-20 px-32">
-            <div className="bg-background bg-cover bg-center">
+        <div className="bg-background-login-layout bg-cover bg-right w-screen h-screen py-20 px-32">
+            <div className="bg-background-login bg-cover bg-center">
                 <div className="h-[80vh] grid grid-cols-6">
                     <div className="grid grid-cols-12 col-span-3 h-screen md:h-auto">
                         <div className="col-end-9 col-span-9 bg-transparent h-full w-full">

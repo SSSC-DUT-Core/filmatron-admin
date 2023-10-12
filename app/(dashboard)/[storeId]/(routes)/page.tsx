@@ -27,7 +27,7 @@ const DashboardPage = async () => {
                   },
                   context: {
                       headers: {
-                          Authorization: sessionStorage.getItem("access_token"),
+                          Authorization:localStorage.getItem("access_token"),
                       },
                   },
               }

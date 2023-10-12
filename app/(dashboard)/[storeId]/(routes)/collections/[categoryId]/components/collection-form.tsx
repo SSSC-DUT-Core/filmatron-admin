@@ -69,7 +69,7 @@ export const CollectionForm = ({
   const [createCollectionMutation] = useCreateCollectionMutation(
     {
       "context" : {
-          "authorization": sessionStorage.getItem("access_token")}
+          "authorization":localStorage.getItem("access_token")}
       }
   );
 

@@ -31,9 +31,10 @@ import { useCreateFilmMutation, CreateFilmDto } from '@/graphql/generated/index'
 
 // const validGenres = Object.values(FilmGenre).map((genre) => genre.toString());
 const formSchema = z.object({
+  id: z.coerce.number(),
   name: z.string(),
   description: z.string(),
-  duration: z.number(),
+  duration: z.coerce.number(),
   releaseDate: z.string(),
   genres: z.array(z.string()),
   stars: z.array(z.string()),

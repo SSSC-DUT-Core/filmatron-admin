@@ -455,6 +455,13 @@ export type GetFilmsQueryVariables = Exact<{
 
 export type GetFilmsQuery = { __typename?: 'Query', getFilms: { __typename?: 'PaginatedFilm', edges?: Array<{ __typename?: 'FilmEntityEdge', cursor: string, node: { __typename?: 'FilmEntity', id: string, avatar: string, background: string, name: string, description: string, duration: number, releaseDate: any, genres: Array<string>, stars: Array<string>, directors: Array<string>, adminProcess: AdminProcessStatus, status: FilmStatus, endDateSubscriber: any, topCasts?: Array<{ __typename?: 'FilmTopCast', name: string, avatar: string }> | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } };
 
+export type CreateCompressedNftMetadataMutationVariables = Exact<{
+  input: CreateCompressedNftMetadata;
+}>;
+
+
+export type CreateCompressedNftMetadataMutation = { __typename?: 'Mutation', createCompressedNFTMetadata: { __typename?: 'ReturnMessageBase', message: string, success: boolean } };
+
 export type GetCompressedNfTsOfFilmQueryVariables = Exact<{
   filmId: Scalars['ID']['input'];
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -633,6 +640,40 @@ export function useGetFilmsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHoo
 export type GetFilmsQueryHookResult = ReturnType<typeof useGetFilmsQuery>;
 export type GetFilmsLazyQueryHookResult = ReturnType<typeof useGetFilmsLazyQuery>;
 export type GetFilmsQueryResult = Apollo.QueryResult<GetFilmsQuery, GetFilmsQueryVariables>;
+export const CreateCompressedNftMetadataDocument = gql`
+    mutation createCompressedNFTMetadata($input: CreateCompressedNFTMetadata!) {
+  createCompressedNFTMetadata(input: $input) {
+    message
+    success
+  }
+}
+    `;
+export type CreateCompressedNftMetadataMutationFn = Apollo.MutationFunction<CreateCompressedNftMetadataMutation, CreateCompressedNftMetadataMutationVariables>;
+
+/**
+ * __useCreateCompressedNftMetadataMutation__
+ *
+ * To run a mutation, you first call `useCreateCompressedNftMetadataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCompressedNftMetadataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCompressedNftMetadataMutation, { data, loading, error }] = useCreateCompressedNftMetadataMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCompressedNftMetadataMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateCompressedNftMetadataMutation, CreateCompressedNftMetadataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreateCompressedNftMetadataMutation, CreateCompressedNftMetadataMutationVariables>(CreateCompressedNftMetadataDocument, options);
+      }
+export type CreateCompressedNftMetadataMutationHookResult = ReturnType<typeof useCreateCompressedNftMetadataMutation>;
+export type CreateCompressedNftMetadataMutationResult = Apollo.MutationResult<CreateCompressedNftMetadataMutation>;
+export type CreateCompressedNftMetadataMutationOptions = Apollo.BaseMutationOptions<CreateCompressedNftMetadataMutation, CreateCompressedNftMetadataMutationVariables>;
 export const GetCompressedNfTsOfFilmDocument = gql`
     query getCompressedNFTsOfFilm($filmId: ID!, $first: Int, $after: String, $last: Int, $before: String) {
   getCompressedNFTsOfFilm(

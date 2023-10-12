@@ -1,0 +1,6 @@
+mutation createCompressedNFTMetadata($input: CreateCompressedNFTMetadata!) {
+  createCompressedNFTMetadata(input: $input) {
+    message
+    success
+  }
+}

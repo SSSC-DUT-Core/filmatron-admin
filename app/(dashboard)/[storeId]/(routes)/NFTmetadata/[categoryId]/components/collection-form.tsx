@@ -21,18 +21,24 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
-import { useCreateCollectionMutation } from "@/graphql/generated"
-import { CreateCollectionNftDto, CollectionMetadataDto } from "@/graphql/generated"
+import { CreateCompressedNftMetadata, useCreateCompressedNftMetadataMutation } from "@/graphql/generated"
+import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form"
 
-type CollectionFormValues = CreateCollectionNftDto
+type CompressedNFTMetadataValues = CreateCompressedNftMetadata
 
-interface CollectionFormProps {
-  initialData: CollectionFormValues | null;
+interface CompressedNFTMetadataProps {
+  initialData: CompressedNFTMetadataValues | null;
 };
 
-export const CollectionForm = ({
+const formSchema = z.object({
+  name: z.string().nonempty("Name is required"),
+  symbol: z.string().nonempty("Symbol is required"),
+  uri: z.string().url(),
+});
+
+export const CompressedNFTMetadata = ({
   initialData,
-}: CollectionFormProps) => {
+}: CompressedNFTMetadataProps) => {
   const searchParams = useSearchParams();
   const filmId = Number(searchParams.get('filmId'));
 
@@ -42,29 +48,19 @@ export const CollectionForm = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? 'Edit Collection' : 'Create Collection';
-  const description = initialData ? 'Edit a Collection.' : 'Add a new Collection';
-  const toastMessage = initialData ? 'Collection updated.' : 'Collection created.';
+  const title = initialData ? 'Edit NFT Metdata' : 'Create NFT Metdata';
+  const description = initialData ? 'Edit a NFT Metdata.' : 'Add a new NFT Metdata';
+  const toastMessage = initialData ? 'NFT Metdata updated.' : 'NFT Metdata created.';
   const action = initialData ? 'Save changes' : 'Create';
 
-  const form = useForm<CollectionFormValues>({
-    // resolver: zodResolver(formSchema), // You can add zodResolver here if needed
-    defaultValues: initialData || {
-      metadata: {
-        name: "", // Initialize with empty values
-        symbol: "",
-        uri: "",
-      },
-    },
-  });
-  const [createCollectionMutation] = useCreateCollectionMutation(
+  const [createCollectionMutation] = useCreateCompressedNftMetadataMutation(
     {
       "context" : {
           "authorization":localStorage.getItem("access_token")}
       }
   );
 
-  const onSubmit = async (data: CreateCollectionNftDto) => {
+  const onSubmit = async (data: CreateCompressedNftMetadata) => {
     setLoading(true);
     try {
       if (initialData) {
@@ -74,8 +70,7 @@ export const CollectionForm = ({
         await createCollectionMutation({
 					variables: {
 						input: {
-							filmId,
-							metadata: data.metadata,
+              ...data
 						},
 					},
 					context: {
@@ -111,29 +106,6 @@ export const CollectionForm = ({
     }
   };
 
-  const metadataKeys: (keyof CollectionMetadataDto)[] = ["name", "symbol", "uri"];
-
-  const metadataFields = metadataKeys.map((fieldName) => {
-    const capitalizedFieldName = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
-  
-    return (
-      <FormField
-        key={fieldName}
-        control={form.control}
-        name={`metadata.${fieldName}`}
-        rules={{ required: true }}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{capitalizedFieldName}</FormLabel>
-            <FormControl>
-              <Input disabled={loading} placeholder={`Enter ${capitalizedFieldName}`} {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    );
-  });
 
   return (
     <>
@@ -145,18 +117,31 @@ export const CollectionForm = ({
             <Trash className="h-4 w-4" />
           </Button>
         )}
+
       </div>
       <Separator />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-          <div className="md:grid md:grid-cols-3 gap-8">
-            {metadataFields}
-          </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button>
-        </form>
-      </Form>
+         <Separator />
+      <AutoForm
+      onSubmit={(data)=>{
+          onSubmit({
+            filmId: filmId.toString(),
+            ...data
+          })
+      }}
+      formSchema={formSchema}
+
+    >
+ 
+    <AutoFormSubmit>Create NFT Metadata</AutoFormSubmit>
+   
+      <p className="text-gray-500 text-sm">
+        By submitting this form, you agree to our{" "}
+        <a href="#" className="text-primary underline">
+          terms and conditions
+        </a>
+        .
+      </p>
+    </AutoForm>
     </>
   );
 };

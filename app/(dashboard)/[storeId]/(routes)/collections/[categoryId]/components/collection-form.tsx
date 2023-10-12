@@ -3,11 +3,10 @@
 import * as z from "zod"
 import axios from "axios"
 import React, { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -22,19 +21,8 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useCreateCollectionMutation } from "@/graphql/generated"
 import { CreateCollectionNftDto, CollectionMetadataDto } from "@/graphql/generated"
-const formSchema = z.object({
-  name: z.string().min(2),
-  metadata: z.object({
-    name: z.string(),
-    symbol: z.string(),
-    description: z.string(),
-    image: z.string(),
-  })
-  // collectionImage: z.union([z.instanceof(File).nullable(), z.literal(null)]),
-});
 
 type CollectionFormValues = CreateCollectionNftDto
 
@@ -45,6 +33,9 @@ interface CollectionFormProps {
 export const CollectionForm = ({
   initialData,
 }: CollectionFormProps) => {
+  const searchParams = useSearchParams();
+  const filmId = Number(searchParams.get('filmId'));
+
   const params = useParams();
   const router = useRouter();
 
@@ -74,32 +65,34 @@ export const CollectionForm = ({
   );
 
   const onSubmit = async (data: CreateCollectionNftDto) => {
+    setLoading(true);
     try {
-      setLoading(true);
       if (initialData) {
         // Handle editing here if needed
       } else {
-        // Use form data to create a new collection
+        setLoading(true);
         await createCollectionMutation({
-          variables: {
-            input: {
-              filmId: 1, // Set this value based on your logic
-              metadata: data.metadata, // Use form data
-            },
-          },
-        });
-
-        console.log("ok");
-        router.refresh();
-        router.push(`/${params.storeId}/categories`);
-        toast.success(toastMessage);
+					variables: {
+						input: {
+							filmId,
+							metadata: data.metadata,
+						},
+					},
+					context: {
+						headers: {
+							Authorization: localStorage.getItem('access_token'),
+						},
+					},
+					onCompleted: () => {
+						setLoading(false);
+						router.push(`/${params.storeId}/categories`);
+						toast.success(toastMessage);
+					},
+				});
       }
     } catch (error: any) {
-      // Handle errors here
-    } finally {
-      toast.success(toastMessage);
-      router.push("/dashboard/collections");
-      setLoading(false);
+      toast.error('Something went wrong');
+			setLoading(false);
     }
   };
 
@@ -121,7 +114,6 @@ export const CollectionForm = ({
   const metadataKeys: (keyof CollectionMetadataDto)[] = ["name", "symbol", "uri"];
 
   const metadataFields = metadataKeys.map((fieldName) => {
-    // Capitalize the first letter of the field name
     const capitalizedFieldName = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
   
     return (
@@ -129,9 +121,9 @@ export const CollectionForm = ({
         key={fieldName}
         control={form.control}
         name={`metadata.${fieldName}`}
+        rules={{ required: true }}
         render={({ field }) => (
           <FormItem>
-            {/* Use the capitalizedFieldName here */}
             <FormLabel>{capitalizedFieldName}</FormLabel>
             <FormControl>
               <Input disabled={loading} placeholder={`Enter ${capitalizedFieldName}`} {...field} />
@@ -158,23 +150,7 @@ export const CollectionForm = ({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <div className="md:grid md:grid-cols-3 gap-8">
-            {/* Render dynamically generated metadata fields */}
             {metadataFields}
-            {/* <FormField
-              control={form.control}
-              name="metadata.uri"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Image</FormLabel>
-                  <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                    <FormControl>
-                      <Input type="file" />
-                    </FormControl>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

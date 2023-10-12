@@ -5,10 +5,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import DiscordLoginImage from "/public/assets/auth/login-discord.svg";
-import FacebookLoginImage from "/public/assets/auth/login-facebook.svg";
 import GoogleLoginImage from "/public/assets/auth/login-google.svg";
-import TwitterLoginImage from "/public/assets/auth/login-twitter.svg";
 import logo from "/public/assets/logo.svg";
 import { config } from '../../../src/config/index';
 
@@ -19,36 +16,12 @@ const socialLoginOptions = [
         imageClass: "w-6 mr-2 login-button-images",
         divClass: "col-span-3",
         imageSrc: GoogleLoginImage,
-        imgAltText: "Login with Google",
+        imgAltText: "Login",
         buttonLoginText: true,
         translateLoginText: "dappLogin.continue",
         verifier: "Google",
         loginUrl:
-            `https://filmatron-jwks.kylan.so/wallet/request?callbackUrl=${config.domain}/login&permissions=Permission%3AReadPersionalInfo,Permission%3AReadWalletAddresses,Permission%3ARequestSignature`,
-    },
-    {
-        imageClass: "w-6 login-button-images",
-        loginType: "facebook",
-        imageSrc: FacebookLoginImage,
-        imgAltText: "Login with Facebook",
-        loginUrl:
-            `https://filmatron-jwks.kylan.so/wallet/request?callbackUrl=${config.domain}/login&permissions=Permission%3AReadPersionalInfo,Permission%3AReadWalletAddresses,Permission%3ARequestSignature`,
-    },
-    {
-        loginType: "twitter",
-        imageClass: "w-6 login-button-images",
-        imageSrc: TwitterLoginImage,
-        imgAltText: "Login with Twitter",
-        loginUrl:
-            `https://filmatron-jwks.kylan.so/wallet/request?callbackUrl=${config.domain}/login&permissions=Permission%3AReadPersionalInfo,Permission%3AReadWalletAddresses,Permission%3ARequestSignature`,
-    },
-    {
-        imageClass: "w-6 login-button-images",
-        loginType: "discord",
-        imageSrc: DiscordLoginImage,
-        imgAltText: "Login with Discord",
-        loginUrl:
-            `https://filmatron-jwks.kylan.so/wallet/request?callbackUrl=${config.domain}//login&permissions=Permission%3AReadPersionalInfo,Permission%3AReadWalletAddresses,Permission%3ARequestSignature`,
+            `https://filmatron-jwks.kylan.so/wallet/request?callbackUrl=${config.domain}/&permissions=Permission%3AReadPersionalInfo,Permission%3AReadWalletAddresses,Permission%3ARequestSignature`,
     },
 ];
 
@@ -73,7 +46,7 @@ const LoginPage = () => {
                     return response.json();
                 })
                 .then(data => {
-                    sessionStorage.setItem("access_token", `Bearer ${data}`);
+                    localStorage.setItem('access_token', `Bearer ${data}`);
                     router.push("/dashboard");
                 })
                 .catch(error => {
@@ -132,13 +105,6 @@ const LoginPage = () => {
                                         }
                                     )}
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="h-full flex items-center">
-                        <div className="grid text-white">
-                            <div className="grid">
-                                {/* {loggedIn ? loggedInView : unloggedInView} */}
                             </div>
                         </div>
                     </div>

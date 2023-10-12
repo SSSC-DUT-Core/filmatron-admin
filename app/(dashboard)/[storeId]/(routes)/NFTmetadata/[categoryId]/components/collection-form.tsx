@@ -80,8 +80,8 @@ export const CompressedNFTMetadata = ({
 					},
 					onCompleted: () => {
 						setLoading(false);
-						router.push(`/${params.storeId}/films`);
 						toast.success(toastMessage);
+						router.push(`/${params.storeId}/films`);
 					},
 				});
       }

@@ -47,7 +47,7 @@ const LoginPage = () => {
                 })
                 .then(data => {
                     localStorage.setItem('access_token', `Bearer ${data}`);
-                    router.push("/dashboard");
+                    router.push("/");
                 })
                 .catch(error => {
                     console.error("Fetch error:", error);

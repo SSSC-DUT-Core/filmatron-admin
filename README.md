@@ -5,7 +5,7 @@
 ### Cloning the repository
 
 ```shell
-git clone https://github.com/VanKiem-Tran/e-commerce-stripe-onramp.git
+https://github.com/SSSC-DUT-Core/filmatron-admin
 ```
 
 ```shell
@@ -22,10 +22,7 @@ npm i
 
 
 ```js
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=""
-STRIPE_API_KEY=
-FRONTEND_STORE_URL=http://localhost:3001
-STRIPE_WEBHOOK_SECRET=
+
 ```
 
 ### Start the app

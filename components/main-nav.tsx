@@ -14,39 +14,39 @@ export function MainNav({
 
   const routes = [
 		{
-			href: `/${params.storeId}`,
+			href: ``,
 			label: 'Overview',
-			active: pathname === `/${params.storeId}`,
+			active: pathname === ``,
 		},
 		{
-			href: `/${params.storeId}/users`,
+			href: `/users`,
 			label: 'Users',
-			active: pathname === `/${params.storeId}/billboards`,
+			active: pathname === `/billboards`,
 		},
 		{
-			href: `/${params.storeId}/credit`,
+			href: `/credit`,
 			label: 'Credit',
-			active: pathname === `/${params.storeId}/sizes`,
+			active: pathname === `/sizes`,
 		},
 		{
-			href: `/${params.storeId}/lucky-draw`,
+			href: `/lucky-draw`,
 			label: 'Lucky draw',
-			active: pathname === `/${params.storeId}/colors`,
+			active: pathname === `/colors`,
 		},
 		{
-			href: `/${params.storeId}/films`,
+			href: `/films`,
 			label: 'Films',
-			active: pathname === `/${params.storeId}/films`,
+			active: pathname === `/films`,
 		},
 		{
-			href: `/${params.storeId}/drops`,
+			href: `/drops`,
 			label: 'Drops',
-			active: pathname === `/${params.storeId}/orders`,
+			active: pathname === `/orders`,
 		},
 		{
-			href: `/${params.storeId}/settings`,
+			href: `/settings`,
 			label: 'Settings',
-			active: pathname === `/${params.storeId}/settings`,
+			active: pathname === `/settings`,
 		},
 	];
 

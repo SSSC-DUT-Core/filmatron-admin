@@ -16,8 +16,8 @@ const Navbar = () => {
         
         <div className="ml-auto flex items-center space-x-4">
         {isLoggedIn ? (<ThemeToggle />) : (
-        <Link>
-        <Button href="/login">Login</Button>
+        <Link href="/login">
+        <Button >Login</Button>
         </Link>)}
 
         </div>

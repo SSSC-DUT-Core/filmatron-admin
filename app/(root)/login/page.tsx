@@ -21,7 +21,7 @@ const socialLoginOptions = [
         translateLoginText: "dappLogin.continue",
         verifier: "Google",
         loginUrl:
-            `https://filmatron-jwks.kylan.so/wallet/request?callbackUrl=${config.domain}/&permissions=Permission%3AReadPersionalInfo,Permission%3AReadWalletAddresses,Permission%3ARequestSignature`,
+            `https://filmatron-jwks.kylan.so/wallet/request?callbackUrl=${config.domain}/login/&permissions=Permission%3AReadPersionalInfo,Permission%3AReadWalletAddresses,Permission%3ARequestSignature`,
     },
 ];
 

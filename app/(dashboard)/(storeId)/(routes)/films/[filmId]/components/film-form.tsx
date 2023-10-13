@@ -31,7 +31,6 @@ import { useCreateFilmMutation, CreateFilmDto } from '@/graphql/generated/index'
 import { DateInput } from "@/components/ui/date-input"
 import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form"
 
-// const validGenres = Object.values(FilmGenre).map((genre) => genre.toString());
 const formSchema = z.object({
   name: z.string(),
   description: z.string(),
@@ -117,7 +116,7 @@ export const FilmForm: React.FC<FilmFormProps> = ({
         variables: { input },
         context: {
           headers: {
-              Authorization: localStorage.getItem("access_token"),
+              Authorization: localStorage?.getItem("access_token"),
           },
       },
       });
@@ -150,6 +149,12 @@ export const FilmForm: React.FC<FilmFormProps> = ({
 
   return (
     <>
+     <AlertModal
+        isOpen={open} 
+        onClose={() => setOpen(false)}
+        onConfirm={confirm}
+        loading={loading}
+      />
       <div className="flex items-center justify-between">
         <Heading title="Create Film" description="Add a new Film" />
       </div>

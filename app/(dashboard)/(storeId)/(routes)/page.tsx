@@ -16,7 +16,7 @@ interface DashboardPageProps {
 const DashboardPage = async () => {
   const [signInWithSocialMutation, { data, loading, error }] = useSignInWithSocialMutation();
   useEffect(() => {
-      if (sessionStorage.getItem("access_token")) {
+      if (localStorage.getItem("access_token")) {
           signInWithSocialMutation(
               {
                   variables: {

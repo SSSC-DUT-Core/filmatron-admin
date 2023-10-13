@@ -29,7 +29,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useActiveStore } from '../../../../../../../hooks/use-active-store';
 import { useCreateFilmMutation, CreateFilmDto } from '@/graphql/generated/index';
 import { DateInput } from "@/components/ui/date-input"
-import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form"
+import AutoForm, { AutoFormInputComponentProps, AutoFormSubmit } from "@/components/ui/auto-form"
+import FileUploadInput from "@/components/ui/FileUploadPreviewInput"
 
 const formSchema = z.object({
   name: z.string(),
@@ -160,6 +161,72 @@ export const FilmForm: React.FC<FilmFormProps> = ({
       </div>
       <Separator />
       <AutoForm
+      fieldConfig={{
+        avatar: {
+          fieldType: ({
+            label,
+        isRequired,
+        field,
+        fieldConfigItem,
+        fieldProps,
+          }: AutoFormInputComponentProps) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+               <FormLabel>
+              {label}
+              {isRequired && <span className="text-destructive"> *</span>}
+            </FormLabel>
+                <FormControl
+                >
+
+               <FileUploadInput
+               className="w-full"
+               value={field.value}
+               onFieldChange={field.onChange}
+               />
+                </FormControl>
+
+                <div className="space-y-1 leading-none">
+         
+            {fieldConfigItem.description && (
+              <FormDescription>{fieldConfigItem.description}</FormDescription>
+            )}
+          </div>
+            </FormItem>
+          ),
+        },
+        background: {
+          fieldType: ({
+            label,
+        isRequired,
+        field,
+        fieldConfigItem,
+        fieldProps,
+          }: AutoFormInputComponentProps) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+               <FormLabel>
+              {label}
+              {isRequired && <span className="text-destructive"> *</span>}
+            </FormLabel>
+                <FormControl
+                >
+
+               <FileUploadInput
+               className="w-full"
+               value={field.value}
+               onFieldChange={field.onChange}
+               />
+                </FormControl>
+
+                <div className="space-y-1 leading-none">
+         
+            {fieldConfigItem.description && (
+              <FormDescription>{fieldConfigItem.description}</FormDescription>
+            )}
+          </div>
+            </FormItem>
+          ),
+        },
+      }}
       onSubmit={(data)=>{
           onSubmit(data)
       }}

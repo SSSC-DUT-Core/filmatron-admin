@@ -1,0 +1,6 @@
+mutation uploadImageToCloudinary($input: FileUploadInput!) {
+  uploadImageToCloudinary(input: $input) {
+    success
+    message
+  }
+}

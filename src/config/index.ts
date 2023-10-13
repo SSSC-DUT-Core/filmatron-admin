@@ -18,6 +18,7 @@ console.log(
     `FILMATRON_SERVER_URL: ${process.env.NEXT_PUBLIC_FILMATRON_SERVER_URL}`,
 );
 export const config = {
+    restfulUrl: process.env.NEXT_PUBLIC_FILMATRON_REST_SERVER_URL,
     domain: process.env.NEXT_PUBLIC_APP_HOST ?? DOMAIN,
     port: process.env.NEXT_PUBLIC_APP_HOST ?? 3000,
     apiUrl: process.env.NEXT_PUBLIC_FILMATRON_SERVER_URL ?? API_URL,

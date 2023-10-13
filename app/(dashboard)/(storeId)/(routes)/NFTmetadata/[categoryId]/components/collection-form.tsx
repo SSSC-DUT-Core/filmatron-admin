@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,8 +22,11 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
-import { CreateCompressedNftMetadata, useCreateCompressedNftMetadataMutation } from "@/graphql/generated"
-import AutoForm, { AutoFormSubmit } from "@/components/ui/auto-form"
+import { CreateCompressedNftMetadata, useCreateCompressedNftMetadataMutation, useUploadImageToCloudinaryMutation } from "@/graphql/generated"
+import AutoForm, { AutoFormInputComponentProps, AutoFormSubmit } from "@/components/ui/auto-form"
+import ImageUpload from "@/components/ui/image-upload"
+import { config } from "@/src/config"
+import FileUploadInput from "@/components/ui/FileUploadPreviewInput"
 
 type CompressedNFTMetadataValues = CreateCompressedNftMetadata
 
@@ -47,10 +51,9 @@ export const CompressedNFTMetadata = ({
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const title = initialData ? 'Edit NFT Metdata' : 'Create NFT Metdata';
-  const description = initialData ? 'Edit a NFT Metdata.' : 'Add a new NFT Metdata';
-  const toastMessage = initialData ? 'NFT Metdata updated.' : 'NFT Metdata created.';
+  const title = initialData ? 'Edit NFT MetaData' : 'Create NFT MetaData';
+  const description = initialData ? 'Edit a NFT MetaData.' : 'Add a new NFT MetaData';
+  const toastMessage = initialData ? 'NFT MetaData updated.' : 'NFT MetaData created.';
   const action = initialData ? 'Save changes' : 'Create';
 
   const [createCollectionMutation] = useCreateCompressedNftMetadataMutation(
@@ -59,6 +62,7 @@ export const CompressedNFTMetadata = ({
           "authorization":localStorage.getItem("access_token")}
       }
   );
+ 
 
   const onSubmit = async (data: CreateCompressedNftMetadata) => {
     setLoading(true);
@@ -120,13 +124,45 @@ export const CompressedNFTMetadata = ({
 
       </div>
       <Separator />
-         <Separator />
       <AutoForm
       onSubmit={(data)=>{
           onSubmit({
             filmId: filmId.toString(),
             ...data
           })
+      }}
+      fieldConfig={{
+        uri: {
+          fieldType: ({
+            label,
+        isRequired,
+        field,
+        fieldConfigItem,
+        fieldProps,
+          }: AutoFormInputComponentProps) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+               <FormLabel>
+              {label}
+              {isRequired && <span className="text-destructive"> *</span>}
+            </FormLabel>
+                <FormControl
+                >
+
+               <FileUploadInput
+               value={field.value}
+               onFieldChange={field.onChange}
+               />
+                </FormControl>
+
+                <div className="space-y-1 leading-none">
+         
+            {fieldConfigItem.description && (
+              <FormDescription>{fieldConfigItem.description}</FormDescription>
+            )}
+          </div>
+            </FormItem>
+          ),
+        },
       }}
       formSchema={formSchema}
 

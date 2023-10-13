@@ -16,20 +16,27 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormDescription,
   FormMessage,
 } from "@/components/ui/form"
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
+import AutoForm, { AutoFormInputComponentProps, AutoFormSubmit } from "@/components/ui/auto-form"
 import { AlertModal } from "@/components/modals/alert-modal"
 import { useCreateCollectionMutation } from "@/graphql/generated"
 import { CreateCollectionNftDto, CollectionMetadataDto } from "@/graphql/generated"
+import FileUploadInput from "@/components/ui/FileUploadPreviewInput"
 
 type CollectionFormValues = CreateCollectionNftDto
 
 interface CollectionFormProps {
   initialData: CollectionFormValues | null;
 };
-
+const formSchema = z.object({
+  name: z.string().nonempty("Name is required"),
+  symbol: z.string().nonempty("Symbol is required"),
+  uri: z.string().url(),
+});
 export const CollectionForm = ({
   initialData,
 }: CollectionFormProps) => {
@@ -74,9 +81,8 @@ export const CollectionForm = ({
         await createCollectionMutation({
 					variables: {
 						input: {
-							filmId,
-							metadata: data.metadata,
-						},
+						  ...data
+						}
 					},
 					context: {
 						headers: {
@@ -147,16 +153,59 @@ export const CollectionForm = ({
         )}
       </div>
       <Separator />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-          <div className="md:grid md:grid-cols-3 gap-8">
-            {metadataFields}
+      <AutoForm
+      onSubmit={(data)=>{
+          onSubmit({
+            filmId: filmId,
+            metadata: data
+          })
+      }}
+      fieldConfig={{
+        uri: {
+          fieldType: ({
+            label,
+        isRequired,
+        field,
+        fieldConfigItem,
+        fieldProps,
+          }: AutoFormInputComponentProps) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+               <FormLabel>
+              {label}
+              {isRequired && <span className="text-destructive"> *</span>}
+            </FormLabel>
+                <FormControl
+                >
+
+               <FileUploadInput
+               value={field.value}
+               onFieldChange={field.onChange}
+               />
+                </FormControl>
+
+                <div className="space-y-1 leading-none">
+         
+            {fieldConfigItem.description && (
+              <FormDescription>{fieldConfigItem.description}</FormDescription>
+            )}
           </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button>
-        </form>
-      </Form>
+            </FormItem>
+          ),
+        },
+      }}
+      formSchema={formSchema}
+
+    >
+    <AutoFormSubmit>Create film&rsquo;s NFT collection</AutoFormSubmit>
+   
+      <p className="text-gray-500 text-sm">
+        By submitting this form, you agree to our{" "}
+        <a href="#" className="text-primary underline">
+          terms and conditions
+        </a>
+        .
+      </p>
+    </AutoForm>
     </>
   );
 };

@@ -1,4 +1,5 @@
 import { FilmEntity, GetFilmsQuery } from "@/graphql/generated";
+import { config } from "@/src/config";
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
  
@@ -19,4 +20,24 @@ export function mapFilmsFromGraphQLResponse(data?: GetFilmsQuery): FilmEntity[] 
   }
 
   return data.getFilms.edges.map((filmEdge) => filmEdge.node);
+}
+export async function uploadFile(file: File, onUploadSuccess?: (url: string) => void) {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch(`${config.restfulUrl}/upload`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      onUploadSuccess?.(data.url);
+    } else {
+      console.error("Error uploading file");
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+  }
 }

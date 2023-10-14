@@ -122,8 +122,8 @@ export const FilmForm: React.FC<FilmFormProps> = ({
       });
   
       router.push(`/films`);
-      router.refresh();
       toast.success(toastMessage);
+      router.refresh();
     } catch (error) {
       toast.error('Something went wrong.');
     } finally {

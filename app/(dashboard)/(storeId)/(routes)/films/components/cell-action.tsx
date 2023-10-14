@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { FilmEntity } from "@/graphql/generated";
-import useToggle from '../../../../../../node_modules/usehooks-ts/dist/esm/useToggle/useToggle';
+import {useToggle} from 'usehooks-ts';
 import { ShareQRCode } from "@/components/QRCode";
 import { Modal } from "@/components/ui/modal";
 import { getClientFilmDetailUrlById } from "@/lib";

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import GoogleLoginImage from "/public/assets/auth/login-google.svg";
 import logo from "/public/assets/logo.svg";
-import { config } from '../../../src/config/index';
+import { config } from '@/src/config';
 
 const socialLoginOptions = [
     {

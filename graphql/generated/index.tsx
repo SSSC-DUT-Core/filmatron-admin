@@ -17,7 +17,6 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   DateTime: { input: any; output: any; }
-  Upload: { input: any; output: any; }
 };
 
 export enum AdminProcessStatus {
@@ -63,10 +62,6 @@ export type CreateFilmDto = {
   releaseDate: Scalars['DateTime']['input'];
   stars?: Array<Scalars['String']['input']>;
   topCasts?: Array<FilmTopCastInput>;
-};
-
-export type FileUploadInput = {
-  file: Scalars['Upload']['input'];
 };
 
 export type FilmCompressedNftEntity = {
@@ -130,12 +125,12 @@ export enum FilmStatus {
 
 export type FilmTopCast = {
   __typename?: 'FilmTopCast';
-  avatar: Scalars['String']['output'];
+  avatar?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
 };
 
 export type FilmTopCastInput = {
-  avatar: Scalars['String']['input'];
+  avatar?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
 };
 
@@ -157,7 +152,6 @@ export type Mutation = {
   /** This api used for update information about the film. For the top cast do not pass the value to the api. Can be used this to update the end date of subscribe for user to be a whitelist of film */
   updateFilm: ReturnMessageBase;
   updateInformation: ReturnMessageBase;
-  uploadImageToCloudinary: ReturnMessageBase;
   upsertGalleryFilm: ReturnMessageBase;
 };
 
@@ -209,11 +203,6 @@ export type MutationUpdateFilmArgs = {
 
 export type MutationUpdateInformationArgs = {
   input: UpdateInformationDto;
-};
-
-
-export type MutationUploadImageToCloudinaryArgs = {
-  input: FileUploadInput;
 };
 
 
@@ -464,7 +453,7 @@ export type GetFilmsQueryVariables = Exact<{
 }>;
 
 
-export type GetFilmsQuery = { __typename?: 'Query', getFilms: { __typename?: 'PaginatedFilm', edges?: Array<{ __typename?: 'FilmEntityEdge', cursor: string, node: { __typename?: 'FilmEntity', id: string, avatar: string, background: string, name: string, description: string, duration: number, releaseDate: any, genres: Array<string>, stars: Array<string>, directors: Array<string>, adminProcess: AdminProcessStatus, status: FilmStatus, endDateSubscriber: any, topCasts?: Array<{ __typename?: 'FilmTopCast', name: string, avatar: string }> | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } };
+export type GetFilmsQuery = { __typename?: 'Query', getFilms: { __typename?: 'PaginatedFilm', edges?: Array<{ __typename?: 'FilmEntityEdge', cursor: string, node: { __typename?: 'FilmEntity', id: string, avatar: string, background: string, name: string, description: string, duration: number, releaseDate: any, genres: Array<string>, stars: Array<string>, directors: Array<string>, adminProcess: AdminProcessStatus, status: FilmStatus, endDateSubscriber: any, topCasts?: Array<{ __typename?: 'FilmTopCast', name: string, avatar?: string | null }> | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } };
 
 export type CreateCompressedNftMetadataMutationVariables = Exact<{
   input: CreateCompressedNftMetadata;
@@ -483,13 +472,6 @@ export type GetCompressedNfTsOfFilmQueryVariables = Exact<{
 
 
 export type GetCompressedNfTsOfFilmQuery = { __typename?: 'Query', getCompressedNFTsOfFilm: { __typename?: 'PaginatedCompressedNFT', edges?: Array<{ __typename?: 'FilmCompressedNFTEntityEdge', cursor: string, node: { __typename?: 'FilmCompressedNFTEntity', id: string, name: string, symbol: string, uri: string, filmId: number } }> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } };
-
-export type UploadImageToCloudinaryMutationVariables = Exact<{
-  input: FileUploadInput;
-}>;
-
-
-export type UploadImageToCloudinaryMutation = { __typename?: 'Mutation', uploadImageToCloudinary: { __typename?: 'ReturnMessageBase', success: boolean, message: string } };
 
 
 export const SignInWithSocialDocument = gql`
@@ -752,37 +734,3 @@ export function useGetCompressedNfTsOfFilmLazyQuery(baseOptions?: ApolloReactHoo
 export type GetCompressedNfTsOfFilmQueryHookResult = ReturnType<typeof useGetCompressedNfTsOfFilmQuery>;
 export type GetCompressedNfTsOfFilmLazyQueryHookResult = ReturnType<typeof useGetCompressedNfTsOfFilmLazyQuery>;
 export type GetCompressedNfTsOfFilmQueryResult = Apollo.QueryResult<GetCompressedNfTsOfFilmQuery, GetCompressedNfTsOfFilmQueryVariables>;
-export const UploadImageToCloudinaryDocument = gql`
-    mutation uploadImageToCloudinary($input: FileUploadInput!) {
-  uploadImageToCloudinary(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UploadImageToCloudinaryMutationFn = Apollo.MutationFunction<UploadImageToCloudinaryMutation, UploadImageToCloudinaryMutationVariables>;
-
-/**
- * __useUploadImageToCloudinaryMutation__
- *
- * To run a mutation, you first call `useUploadImageToCloudinaryMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUploadImageToCloudinaryMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [uploadImageToCloudinaryMutation, { data, loading, error }] = useUploadImageToCloudinaryMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUploadImageToCloudinaryMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UploadImageToCloudinaryMutation, UploadImageToCloudinaryMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useMutation<UploadImageToCloudinaryMutation, UploadImageToCloudinaryMutationVariables>(UploadImageToCloudinaryDocument, options);
-      }
-export type UploadImageToCloudinaryMutationHookResult = ReturnType<typeof useUploadImageToCloudinaryMutation>;
-export type UploadImageToCloudinaryMutationResult = Apollo.MutationResult<UploadImageToCloudinaryMutation>;
-export type UploadImageToCloudinaryMutationOptions = Apollo.BaseMutationOptions<UploadImageToCloudinaryMutation, UploadImageToCloudinaryMutationVariables>;

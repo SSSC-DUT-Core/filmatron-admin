@@ -29,6 +29,7 @@ export function ThemeToggle() {
 
   const logout = async () => {
     router.push('/', { scroll: false });
+		localStorage.removeItem('access_token');
     setLoggedIn(false);
   };
 

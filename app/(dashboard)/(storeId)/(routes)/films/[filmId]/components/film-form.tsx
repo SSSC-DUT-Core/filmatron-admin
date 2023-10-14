@@ -30,7 +30,7 @@ import { useCreateFilmMutation, CreateFilmDto } from '@/graphql/generated/index'
 import { DateInput } from "@/components/ui/date-input"
 import AutoForm, { AutoFormInputComponentProps, AutoFormSubmit } from "@/components/ui/auto-form"
 import FileUploadInput from "@/components/ui/FileUploadPreviewInput"
-
+import {formatErrorMsg} from "@/lib/utils"
 const formSchema = z.object({
   name: z.string(),
   description: z.string(),
@@ -125,6 +125,7 @@ export const FilmForm: React.FC<FilmFormProps> = ({
       toast.success(toastMessage);
       router.refresh();
     } catch (error) {
+      console.log(error)
       toast.error(formatErrorMsg(error));
     } finally {
       setLoading(false);

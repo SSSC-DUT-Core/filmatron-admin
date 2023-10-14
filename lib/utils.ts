@@ -58,9 +58,9 @@ interface ErrorResponse {
   messageCode: string;
 }
 
-export function formatErrorMsg(error: ErrorResponse): string {
-  if (error.statusCode === 500 && error.messageCode === "INTERNAL_SERVER_ERROR" && error.message[0].includes("Cannot destructure property 'pubkey'")) {
-    throw new CustomError("Please log in.");
+export function formatErrorMsg(error: string): string {
+  if (error.toString()?.includes("property")) {
+    return "Please log in first!";
   }
   // Return a default message or throw an error if the error doesn't match the expected pattern
   return "An unexpected error occurred.";

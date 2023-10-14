@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useParams, usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils"
+import Image from "next/image";
 
 export function MainNav({
   className,
@@ -13,11 +14,6 @@ export function MainNav({
   const params = useParams();
 
   const routes = [
-		{
-			href: `/`,
-			label: 'Overview',
-			active: pathname === ``,
-		},
 		{
 			href: `/users`,
 			label: 'Users',
@@ -55,6 +51,17 @@ export function MainNav({
       className={cn("flex items-center space-x-4 lg:space-x-6", className)}
       {...props}
     >
+			     <Link href="/">
+            <div className="mr-5">
+                <Image
+                    src="/assets/images/logo-header.png"
+                    width={144}
+                    height={28}
+                    alt="Logo"
+                    className="h-8"
+                />
+            </div>
+            </Link>
       {routes.map((route) => (
         <Link
           key={route.href}

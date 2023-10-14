@@ -22,7 +22,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
-import { CreateCompressedNftMetadata, useCreateCompressedNftMetadataMutation, useUploadImageToCloudinaryMutation } from "@/graphql/generated"
+import { CreateCompressedNftMetadata, useCreateCompressedNftMetadataMutation } from "@/graphql/generated"
 import AutoForm, { AutoFormInputComponentProps, AutoFormSubmit } from "@/components/ui/auto-form"
 import ImageUpload from "@/components/ui/image-upload"
 import { config } from "@/src/config"

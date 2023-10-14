@@ -38,7 +38,7 @@ export const ShareQRCode = ({ data }: ShareQRCodeProps) => {
     <div className="align-center flex flex-col justify-center align-center">
       <div className="self-center">
         <QRCode
-          url={data.url}
+          url={url}
         />
       </div>
 

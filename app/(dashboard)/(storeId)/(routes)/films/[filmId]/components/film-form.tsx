@@ -49,7 +49,7 @@ const formSchema = z.object({
   topCasts: z.array(
     z.object({
       name: z.string(),
-      avatar: z.string().url(), 
+      avatar: z.string().url().nullable(), 
     })
   ),
   background: z.string(),
@@ -162,6 +162,41 @@ export const FilmForm: React.FC<FilmFormProps> = ({
       <Separator />
       <AutoForm
       fieldConfig={{
+        topCasts: {
+          fieldType: ({
+            label,
+        isRequired,
+        field,
+        fieldConfigItem,
+        fieldProps,
+          }: AutoFormInputComponentProps) => {
+            console.log(field);
+            return (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormLabel>
+             {label}
+             {isRequired && <span className="text-destructive"> *</span>}
+           </FormLabel>
+               <FormControl
+               >
+
+              <FileUploadInput
+              className="w-full"
+              value={field.value}
+              onFieldChange={field.onChange}
+              />
+               </FormControl>
+
+               <div className="space-y-1 leading-none">
+        
+           {fieldConfigItem.description && (
+             <FormDescription>{fieldConfigItem.description}</FormDescription>
+           )}
+         </div>
+           </FormItem>
+         )
+          }
+        },
         avatar: {
           fieldType: ({
             label,

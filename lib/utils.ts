@@ -33,7 +33,7 @@ export async function uploadFile(file: File, onUploadSuccess?: (url: string) => 
 
     if (response.ok) {
       const data = await response.json();
-      onUploadSuccess?.(data.url);
+      onUploadSuccess?.(data.secure_url ?? data.url);
     } else {
       console.error("Error uploading file");
     }

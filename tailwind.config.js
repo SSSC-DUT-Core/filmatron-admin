@@ -24,6 +24,7 @@ module.exports = {
 				xxs: '0.625rem',
 			},
 			colors: {
+				brand: "#F3C879",
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

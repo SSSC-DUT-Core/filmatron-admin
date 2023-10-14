@@ -17,6 +17,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { FilmEntity } from "@/graphql/generated";
+import useToggle from '../../../../../../node_modules/usehooks-ts/dist/esm/useToggle/useToggle';
+import { ShareQRCode } from "@/components/QRCode";
+import { Modal } from "@/components/ui/modal";
+import { getClientFilmDetailUrlById } from "@/lib";
 
 interface CellActionProps {
   data: FilmEntity;
@@ -29,7 +33,7 @@ export const CellAction: React.FC<CellActionProps> = ({
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const params = useParams();
-
+  const [isShareShown, toggleIsShareShown] = useToggle();
   const onConfirm = async () => {
     try {
       setLoading(true);
@@ -45,8 +49,9 @@ export const CellAction: React.FC<CellActionProps> = ({
   };
 
   const onCopy = (id: string) => {
-    navigator.clipboard.writeText(id);
-    toast.success('Product ID copied to clipboard.');
+    navigator.clipboard.writeText(getClientFilmDetailUrlById(id));
+    toggleIsShareShown();
+    toast.success('Film campaign url copied to clipboard.');
   }
 
   return (
@@ -57,6 +62,27 @@ export const CellAction: React.FC<CellActionProps> = ({
         onConfirm={onConfirm}
         loading={loading}
       />
+         <Modal
+                title="Your QR code:"
+                description="Share the movie with everyone."
+                isOpen={isShareShown}
+
+                onClose={toggleIsShareShown}
+            >
+              <div className="flex justify-center flex-col align-center items-center">
+                            <ShareQRCode
+                    data={data}
+                    />
+                    <Button
+                        onClick={toggleIsShareShown}
+                        className="w-60 mt-8 hover:bg-brand rounded-full transform active:scale-75 transition-transform hover:scale-110 duration-500 ease-out cursor-pointer flex flex-row justify-center items-center bg-brand text-black"
+                    >
+                        <p className="text-lg font-semibold">Close</p>
+                    </Button>
+                </div>
+        
+                </Modal>
+     
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -69,7 +95,7 @@ export const CellAction: React.FC<CellActionProps> = ({
           <DropdownMenuItem
             onClick={() => onCopy(data.id)}
           >
-            <Copy className="mr-2 h-4 w-4" /> Copy Id
+            <Copy className="mr-2 h-4 w-4" /> Share to social
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/collections/new?filmId=${data.id}`)}

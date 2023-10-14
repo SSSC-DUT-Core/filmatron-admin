@@ -7,8 +7,6 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
-
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -24,8 +22,6 @@ import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
 import { CreateCompressedNftMetadata, useCreateCompressedNftMetadataMutation } from "@/graphql/generated"
 import AutoForm, { AutoFormInputComponentProps, AutoFormSubmit } from "@/components/ui/auto-form"
-import ImageUpload from "@/components/ui/image-upload"
-import { config } from "@/src/config"
 import FileUploadInput from "@/components/ui/FileUploadPreviewInput"
 
 type CompressedNFTMetadataValues = CreateCompressedNftMetadata
@@ -123,6 +119,7 @@ export const CompressedNFTMetadata = ({
         )}
 
       </div>
+   
       <Separator />
       <AutoForm
       onSubmit={(data)=>{

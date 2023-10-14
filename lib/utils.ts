@@ -41,3 +41,6 @@ export async function uploadFile(file: File, onUploadSuccess?: (url: string) => 
     console.error("Network error:", error);
   }
 }
+export const getClientFilmDetailUrlById = (id: string) => {
+  return `${config.clientDomain}/film/${id}`
+}

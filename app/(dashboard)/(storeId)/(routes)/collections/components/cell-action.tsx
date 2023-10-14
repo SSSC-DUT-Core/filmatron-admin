@@ -47,10 +47,12 @@ export const CellAction: React.FC<CellActionProps> = ({
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
     toast.success('Category ID copied to clipboard.');
+    
   }
 
   return (
     <>
+ 
       <AlertModal 
         isOpen={open} 
         onClose={() => setOpen(false)}
@@ -66,6 +68,7 @@ export const CellAction: React.FC<CellActionProps> = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
           <DropdownMenuItem
             onClick={() => onCopy(data.id)}
           >

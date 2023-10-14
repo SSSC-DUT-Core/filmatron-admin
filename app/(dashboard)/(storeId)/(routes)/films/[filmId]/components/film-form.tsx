@@ -49,7 +49,7 @@ const formSchema = z.object({
   topCasts: z.array(
     z.object({
       name: z.string(),
-      avatar: z.string().url().nullable(), 
+      avatar: z.string().nullable(), 
     })
   ),
   background: z.string(),

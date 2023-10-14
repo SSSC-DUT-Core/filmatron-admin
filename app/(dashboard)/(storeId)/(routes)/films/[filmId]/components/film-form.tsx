@@ -125,7 +125,7 @@ export const FilmForm: React.FC<FilmFormProps> = ({
       toast.success(toastMessage);
       router.refresh();
     } catch (error) {
-      toast.error('Something went wrong.');
+      toast.error(formatErrorMsg(error));
     } finally {
       setLoading(false);
     }

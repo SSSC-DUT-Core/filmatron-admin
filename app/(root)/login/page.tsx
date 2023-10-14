@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import GoogleLoginImage from "/public/assets/auth/login-google.svg";
-import logo from "/public/assets/logo.svg";
+import logo from "/public/assets/logo-google.svg";
 import { config } from '@/src/config';
 
 const socialLoginOptions = [
@@ -15,7 +15,7 @@ const socialLoginOptions = [
         imageHeight: "30px",
         imageClass: "w-6 mr-2 login-button-images",
         divClass: "col-span-3",
-        imageSrc: GoogleLoginImage,
+        imageSrc: logo,
         imgAltText: "Login",
         buttonLoginText: true,
         translateLoginText: "dappLogin.continue",

@@ -14,24 +14,24 @@ export function MainNav({
 
   const routes = [
 		{
-			href: ``,
+			href: `/`,
 			label: 'Overview',
 			active: pathname === ``,
 		},
 		{
 			href: `/users`,
 			label: 'Users',
-			active: pathname === `/billboards`,
+			active: pathname === `/users`,
 		},
 		{
 			href: `/credit`,
 			label: 'Credit',
-			active: pathname === `/sizes`,
+			active: pathname === `/credit`,
 		},
 		{
 			href: `/lucky-draw`,
 			label: 'Lucky draw',
-			active: pathname === `/colors`,
+			active: pathname === `/lucky-draw`,
 		},
 		{
 			href: `/films`,
@@ -41,7 +41,7 @@ export function MainNav({
 		{
 			href: `/drops`,
 			label: 'Drops',
-			active: pathname === `/orders`,
+			active: pathname === `/drops`,
 		},
 		{
 			href: `/settings`,

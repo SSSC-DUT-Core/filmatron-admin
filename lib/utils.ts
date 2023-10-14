@@ -44,3 +44,4 @@ export async function uploadFile(file: File, onUploadSuccess?: (url: string) => 
 export const getClientFilmDetailUrlById = (id: string) => {
   return `${config.clientDomain}/film/${id}`
 }
+

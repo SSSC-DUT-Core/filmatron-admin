@@ -8,6 +8,7 @@ import { FilmEntity } from "@/graphql/generated";
 
 
 import React from 'react';
+import { formatDateToMMMDDYYYY } from '@/lib';
 
 export const columns: ColumnDef<FilmEntity>[]  = [
   {
@@ -31,6 +32,7 @@ export const columns: ColumnDef<FilmEntity>[]  = [
   {
     accessorKey: 'releaseDate',
     header: 'Release Date',
+    cell: ({ row }) => <span>{formatDateToMMMDDYYYY(row.original.releaseDate)}</span>,
   },
   {
     accessorKey: 'duration',

@@ -73,7 +73,7 @@ export const ShareQRCode = ({ data }: ShareQRCodeProps) => {
 
         <div className="w-1/4 flex items-center justify-center">
           <TwitterShareButton
-            url="https://fulfilmcast.com/filmatron.vercel.app/"
+            url={url}
             title={shareQuote} // Set the share title
           >
             <TwitterIcon size={48} round />

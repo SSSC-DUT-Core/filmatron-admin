@@ -45,3 +45,23 @@ export const getClientFilmDetailUrlById = (id: string) => {
   return `${config.clientDomain}/film/${id}`
 }
 
+class CustomError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CustomError";
+  }
+}
+
+interface ErrorResponse {
+  statusCode: number;
+  message: string[];
+  messageCode: string;
+}
+
+export function formatErrorMsg(error: ErrorResponse): string {
+  if (error.statusCode === 500 && error.messageCode === "INTERNAL_SERVER_ERROR" && error.message[0].includes("Cannot destructure property 'pubkey'")) {
+    throw new CustomError("Please log in.");
+  }
+  // Return a default message or throw an error if the error doesn't match the expected pattern
+  return "An unexpected error occurred.";
+}

@@ -125,8 +125,11 @@ export const FilmForm: React.FC<FilmFormProps> = ({
       toast.success(toastMessage);
       router.refresh();
     } catch (error) {
-      console.log(error)
-      toast.error(formatErrorMsg(error));
+      if (typeof error === 'string') {
+        toast.error(formatErrorMsg(error));
+      } else {
+        toast.error('An unexpected error occurred'); // Handle non-string errors with a generic message
+      }
     } finally {
       setLoading(false);
     }

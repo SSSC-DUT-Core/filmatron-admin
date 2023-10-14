@@ -10,15 +10,15 @@ const ProductsPage = async ({
   params: { storeId: string }
 }) => {
   " "
-	const { data:films, loading, error }  = useGetFilmsQuery(
-      {variables: {
-                  first: 0,
-                  after: "1",
-                  last: 5,
-                  before: "1"
-              },}
-        );
-
+  const { data: films, loading, error } = useGetFilmsQuery({
+    fetchPolicy: "network-only",
+    variables: {
+      first: 0,
+      after: "1",
+      last: 5,
+      before: "1"
+    }
+  });
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">

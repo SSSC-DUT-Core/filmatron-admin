@@ -121,13 +121,13 @@ export const FilmForm: React.FC<FilmFormProps> = ({
       },
       });
   
-      router.refresh();
       router.push(`/films`);
+      router.refresh();
+      toast.success(toastMessage);
     } catch (error) {
       toast.error('Something went wrong.');
     } finally {
       setLoading(false);
-      toast.success(toastMessage);
     }
   };
   

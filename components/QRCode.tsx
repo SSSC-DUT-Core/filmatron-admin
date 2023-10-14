@@ -37,17 +37,8 @@ export const ShareQRCode = ({ data }: ShareQRCodeProps) => {
   return (
     <div className="align-center flex flex-col justify-center align-center">
       <div className="self-center">
-        <QRCodeReact
-          value={url}
-          size={300}
-          fgColor="#91754D"
-          imageSettings={{
-            src:
-              "https://res.cloudinary.com/drh6sa2x5/image/upload/c_pad,b_auto:predominant,fl_preserve_transparency/v1697222868/logo_acsbip.jpg?_s=public-apps",
-            excavate: true,
-            width: 64,
-            height: 64,
-          }}
+        <QRCode
+          url={data.url}
         />
       </div>
 

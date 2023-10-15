@@ -210,7 +210,7 @@ export const FilmForm: React.FC<FilmFormProps> = ({
           }: AutoFormInputComponentProps) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                <FormLabel>
-              {label}
+              {"Film cover"}
               {isRequired && <span className="text-destructive"> *</span>}
             </FormLabel>
                 <FormControl
@@ -242,7 +242,7 @@ export const FilmForm: React.FC<FilmFormProps> = ({
           }: AutoFormInputComponentProps) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                <FormLabel>
-              {label}
+              {"Film poster"}
               {isRequired && <span className="text-destructive"> *</span>}
             </FormLabel>
                 <FormControl
